@@ -1,0 +1,3 @@
+[submodule "tools/unity_test_fixture_setup"]
+	path = tools/unity_test_fixture_setup
+	url = https://github.com/dylanR33/unity_test_fixture_setup.git

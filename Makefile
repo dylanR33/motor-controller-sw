@@ -1,4 +1,4 @@
-UTFS_MODULE_DIRS = src/drivers/DRV8323
+UTFS_MODULE_DIRS = test/fakes test/spys src/drivers/DRV8323
 UTFS_TEST_DIR = test
 UTFS_BUILD_DIR = build
 

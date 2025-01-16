@@ -1,0 +1,6 @@
+[submodule "tools/unity-test-fixture-setup"]
+	path = tools/unity-test-fixture-setup
+	url = https://github.com/dylanR33/unity-test-fixture-setup.git
+[submodule "tools/command-line-stm32f4"]
+	path = tools/command-line-stm32f4
+	url = https://github.com/dylanR33/command-line-stm32f4.git

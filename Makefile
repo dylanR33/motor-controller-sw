@@ -12,6 +12,6 @@ clean:
 	rm -r build
 
 
-include tools/unity_test_fixture_setup/unity_test_fixture_setup.mk
-include tools/command_line_stm32/command_line_stm32.mk
+include tools/unity-test-fixture-setup/unity_test_fixture_setup.mk
+include tools/command-line-stm32f4/command_line_stm32f4.mk
 

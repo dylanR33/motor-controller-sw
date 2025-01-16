@@ -101,4 +101,78 @@ TEST( DRV8323, ReadPlaceAddressInBits14Through11 )
     TEST_ASSERT_BITS( 0x7800, 0x2800, FakeRead_GetLastCmd() );
 }
 
+TEST( DRV8323, DriverCtrlMemberBitsPlacedCorrectly )
+{
+    DRV8323DriverCtrl_Config config =
+    {
+        .dis_cpuv = 1,
+        .dis_gdf = 0,
+        .otw_rep = 1,
+        .pwm_mode = 1,
+        .pwm1_com = 1,
+        .pwm1_dir = 0,
+        .coast = 1,
+        .brake = 0,
+        .clr_flt = 1
+    };
 
+    DRV8323_SetDriverCtrlReg( &config );
+    TEST_ASSERT_BITS( 0x07FF, 0x02B5, WriteSpy_GetLastWrite() );
+}
+
+TEST( DRV8323, GateDriveHSMemberBitsPlacedCorrectly )
+{
+    DRV8323GateDriveHS_Config config = 
+    {
+        .lock = 3,
+        .idrivep_hs = 9,
+        .idriven_hs = 10
+    };
+    DRV8323_SetGateDriveHSReg( &config );
+    TEST_ASSERT_BITS( 0x07FF, 0x039A, WriteSpy_GetLastWrite() );
+}
+
+TEST( DRV8323, GateDriveLSMemberBitsPlacedCorrectly )
+{
+    DRV8323GateDriveLS_Config config = 
+    {
+        .cbc = 0,
+        .tdrive = 1,
+        .idrivep_ls = 5,
+        .idriven_ls = 15
+    };
+    DRV8323_SetGateDriveLSReg( &config );
+    TEST_ASSERT_BITS( 0x07FF, 0x015F, WriteSpy_GetLastWrite() );
+}
+
+TEST( DRV8323, OCPCtrlMemberBitsPlacedCorrectly )
+{
+    DRV8323OCPCtrl_Config config = 
+    {
+        .tretry = 1,
+        .dead_time = 0,
+        .ocp_mode = 1,
+        .ocp_deg = 2,
+        .vds_lvl = 12
+    };
+    DRV8323_SetOCPCtrlReg( &config );
+    TEST_ASSERT_BITS( 0x07FF, 0x046C, WriteSpy_GetLastWrite() );
+}
+
+TEST( DRV8323, CSACtrlMemberBitsPlacedCorrectly )
+{
+    DRV8323CSACtrl_Config config = 
+    {
+        .csa_fet = 1,
+        .vref_div = 0,
+        .ls_ref = 1,
+        .csa_gain = 2,
+        .dis_sen = 1,
+        .csa_cal_a = 0,
+        .csa_cal_b = 0,
+        .csa_cal_c = 1,
+        .sen_lvl = 2
+    };
+    DRV8323_SetCSACtrlReg( &config );
+    TEST_ASSERT_BITS( 0x07FF, 0x5A6, WriteSpy_GetLastWrite() );
+}

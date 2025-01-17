@@ -6,12 +6,18 @@ static DRV8323Interface interface = {NULL};
 
 enum 
 {
-    FAULT_STATUS_REG,
-    VSG_STAUS_REG,
     RW_BIT = 0x8000,
     ADDRESS_UPPER_BOUND = 0x06,
     ADDRESS_START_BIT = 11,
-    NON_DATA_BITS = 0xF800
+    NON_DATA_BITS = 0xF800,
+};
+
+enum
+{
+    SINGLE_BIT_MASK = 1,
+    TWO_BIT_MASK = 0x3,
+    THREE_BIT_MASK = 0x7,
+    FOUR_BIT_MASK = 0xF
 };
 
 typedef enum
@@ -27,6 +33,36 @@ typedef enum
 
 typedef enum
 {
+    VDS_LC_Pos,
+    VDS_HC_Pos,
+    VDS_LB_Pos,
+    VDS_HB_Pos,
+    VDS_LA_Pos,
+    VDS_HA_Pos,
+    OTSD_Pos,
+    UVLO_Pos,
+    GDF_Pos,
+    VDS_OCP_Pos,
+    FAULT_Pos,
+} FaultStatus1_BitPos;
+
+typedef enum
+{
+    VGS_LC_Pos,
+    VGS_HC_Pos,
+    VGS_LB_Pos,
+    VGS_HB_Pos,
+    VGS_LA_Pos,
+    VGS_HA_Pos,
+    CPUV_Pos,
+    OTW_Pos,
+    SC_OC_Pos,
+    SB_OC_Pos,
+    SA_OC_Pos,
+} FaultStatus2_BitPos;
+
+typedef enum
+{
     CLR_FLT_Pos,
     BRAKE_Pos,
     COAST_Pos,
@@ -35,7 +71,8 @@ typedef enum
     PWM_MODE_Pos,
     OTW_REP_Pos = 7,
     DIS_GDF_Pos,
-    DIS_CPUV_Pos
+    DIS_CPUV_Pos,
+    RESERVED_Pos
 } DriverCtrl_BitPos;
 
 typedef enum
@@ -87,7 +124,7 @@ static int isInterfaceValid( DRV8323Interface inter )
 
 static int isAddressReadOnly( uint8_t address )
 {
-    return ( address == FAULT_STATUS_REG || address == VSG_STAUS_REG );
+    return ( address == FAULT_STATUS1 || address == FAULT_STATUS2 );
 }
 
 static void clearNonDataBits( uint16_t* data )
@@ -154,7 +191,7 @@ uint16_t DRV8323_Read( uint8_t address )
     return interface.spiRead( cmdOut );
 }
 
-void DRV8323_SetDriverCtrlReg( DRV8323DriverCtrl_Config* config )
+void DRV8323_SetDriverCtrl( DRV8323DriverCtrl* config )
 {
     uint16_t dataOut = 0;
 
@@ -169,12 +206,12 @@ void DRV8323_SetDriverCtrlReg( DRV8323DriverCtrl_Config* config )
             |  config->dis_cpuv << DIS_CPUV_Pos;
     
     // Clear reserved bit
-    dataOut &= ~0x0400;
+    dataOut &= ~( 1 << RESERVED_Pos );
 
     DRV8323_Write( dataOut, DRIVER_CTRL );
 }
 
-void DRV8323_SetGateDriveHSReg( DRV8323GateDriveHS_Config* config )
+void DRV8323_SetGateDriveHS( DRV8323GateDriveHS* config )
 {
     uint16_t dataOut = 0;
 
@@ -186,7 +223,7 @@ void DRV8323_SetGateDriveHSReg( DRV8323GateDriveHS_Config* config )
 }
 
 
-void DRV8323_SetGateDriveLSReg( DRV8323GateDriveLS_Config* config )
+void DRV8323_SetGateDriveLS( DRV8323GateDriveLS* config )
 {
     uint16_t dataOut = 0;
 
@@ -199,7 +236,7 @@ void DRV8323_SetGateDriveLSReg( DRV8323GateDriveLS_Config* config )
 }
 
 
-void DRV8323_SetOCPCtrlReg( DRV8323OCPCtrl_Config* config )
+void DRV8323_SetOCPCtrl( DRV8323OCPCtrl* config )
 {
     uint16_t dataOut = 0;
     
@@ -213,7 +250,7 @@ void DRV8323_SetOCPCtrlReg( DRV8323OCPCtrl_Config* config )
 }
 
 
-void DRV8323_SetCSACtrlReg( DRV8323CSACtrl_Config* config )
+void DRV8323_SetCSACtrl( DRV8323CSACtrl* config )
 {
     uint16_t dataOut = 0;
 
@@ -229,3 +266,109 @@ void DRV8323_SetCSACtrlReg( DRV8323CSACtrl_Config* config )
 
     DRV8323_Write( dataOut, CSA_CTRL );
 }
+
+
+static uint8_t extractBits( uint16_t value, uint16_t mask, uint16_t bitPos )
+{
+    return ( ( value & ( mask << bitPos ) ) >> bitPos );
+}
+
+
+void DRV8323_GetFaultStatus1( DRV8323FaultStatus1* fstat1 )
+{
+    uint16_t reading = DRV8323_Read( FAULT_STATUS1 );
+
+    fstat1->fault   = extractBits( reading, SINGLE_BIT_MASK, FAULT_Pos   );
+    fstat1->vds_ocp = extractBits( reading, SINGLE_BIT_MASK, VDS_OCP_Pos );
+    fstat1->gdf     = extractBits( reading, SINGLE_BIT_MASK, GDF_Pos     );
+    fstat1->uvlo    = extractBits( reading, SINGLE_BIT_MASK, UVLO_Pos    );
+    fstat1->otsd    = extractBits( reading, SINGLE_BIT_MASK, OTSD_Pos    );
+    fstat1->vds_ha  = extractBits( reading, SINGLE_BIT_MASK, VDS_HA_Pos  );
+    fstat1->vds_la  = extractBits( reading, SINGLE_BIT_MASK, VDS_LA_Pos  );
+    fstat1->vds_hb  = extractBits( reading, SINGLE_BIT_MASK, VDS_HB_Pos  );
+    fstat1->vds_lb  = extractBits( reading, SINGLE_BIT_MASK, VDS_LB_Pos  );
+    fstat1->vds_hc  = extractBits( reading, SINGLE_BIT_MASK, VDS_HC_Pos  );
+    fstat1->vds_lc  = extractBits( reading, SINGLE_BIT_MASK, VDS_LC_Pos  );
+}
+
+
+void DRV8323_GetFaultStatus2( DRV8323FaultStatus2* fstat2 )
+{
+    uint16_t reading = DRV8323_Read( FAULT_STATUS2 );
+
+    fstat2->sa_oc  = extractBits( reading, SINGLE_BIT_MASK, SA_OC_Pos   );
+    fstat2->sb_oc  = extractBits( reading, SINGLE_BIT_MASK, SB_OC_Pos   );
+    fstat2->sc_oc  = extractBits( reading, SINGLE_BIT_MASK, SC_OC_Pos   );
+    fstat2->otw    = extractBits( reading, SINGLE_BIT_MASK, OTW_Pos     );
+    fstat2->cpuv   = extractBits( reading, SINGLE_BIT_MASK, CPUV_Pos    );
+    fstat2->vgs_ha = extractBits( reading, SINGLE_BIT_MASK, VGS_HA_Pos  );
+    fstat2->vgs_la = extractBits( reading, SINGLE_BIT_MASK, VGS_LA_Pos  );
+    fstat2->vgs_hb = extractBits( reading, SINGLE_BIT_MASK, VGS_HB_Pos  );
+    fstat2->vgs_lb = extractBits( reading, SINGLE_BIT_MASK, VGS_LB_Pos  );
+    fstat2->vgs_hc = extractBits( reading, SINGLE_BIT_MASK, VGS_HC_Pos  );
+    fstat2->vgs_lc = extractBits( reading, SINGLE_BIT_MASK, VGS_LC_Pos  );
+}
+
+
+void DRV8323_GetDriverCtrl( DRV8323DriverCtrl* driverCtrl )
+{
+    uint16_t reading = DRV8323_Read( DRIVER_CTRL );
+
+    driverCtrl->dis_cpuv = extractBits( reading, SINGLE_BIT_MASK, DIS_CPUV_Pos );
+    driverCtrl->dis_gdf  = extractBits( reading, SINGLE_BIT_MASK, DIS_GDF_Pos  );
+    driverCtrl->otw_rep  = extractBits( reading, SINGLE_BIT_MASK, OTW_Pos      );
+    driverCtrl->pwm_mode = extractBits( reading, TWO_BIT_MASK   , PWM_MODE_Pos );
+    driverCtrl->pwm1_com = extractBits( reading, SINGLE_BIT_MASK, PWM1_COM_Pos );
+    driverCtrl->coast    = extractBits( reading, SINGLE_BIT_MASK, COAST_Pos    );
+    driverCtrl->brake    = extractBits( reading, SINGLE_BIT_MASK, BRAKE_Pos    );
+    driverCtrl->clr_flt  = extractBits( reading, SINGLE_BIT_MASK, CLR_FLT_Pos  );
+}
+
+
+void DRV8323_GetGateDriveHS( DRV8323GateDriveHS* gateDriveHS )
+{
+    uint16_t reading = DRV8323_Read( GATE_DRIVE_HS );
+
+    gateDriveHS->lock       = extractBits( reading, THREE_BIT_MASK, LOCK_Pos       );
+    gateDriveHS->idrivep_hs = extractBits( reading, FOUR_BIT_MASK , IDRIVEP_HS_Pos );
+    gateDriveHS->idriven_hs = extractBits( reading, FOUR_BIT_MASK , IDRIVEN_HS_Pos );
+}
+
+void DRV8323_GetGateDriveLS( DRV8323GateDriveLS* gateDriveLS )
+{
+    uint16_t reading = DRV8323_Read( GATE_DRIVE_LS );
+
+    gateDriveLS->cbc        = extractBits( reading, SINGLE_BIT_MASK, CBC_Pos        );
+    gateDriveLS->tdrive     = extractBits( reading, TWO_BIT_MASK   , TDRIVE_Pos     );
+    gateDriveLS->idrivep_ls = extractBits( reading, FOUR_BIT_MASK  , IDRIVEP_LS_Pos );
+    gateDriveLS->idriven_ls = extractBits( reading, FOUR_BIT_MASK  , IDRIVEN_LS_Pos );
+}
+
+
+void DRV8323_GetOCPCtrl( DRV8323OCPCtrl* ocpCtrl )
+{
+    uint16_t reading = DRV8323_Read( OCP_CTRL );
+    
+    ocpCtrl->tretry    = extractBits( reading, SINGLE_BIT_MASK, TRETRY_Pos    );
+    ocpCtrl->dead_time = extractBits( reading, TWO_BIT_MASK   , DEAD_TIME_Pos );
+    ocpCtrl->ocp_mode  = extractBits( reading, TWO_BIT_MASK   , OCP_MODE_Pos  );
+    ocpCtrl->ocp_deg   = extractBits( reading, TWO_BIT_MASK   , OCP_DEG_Pos   );
+    ocpCtrl->vds_lvl   = extractBits( reading, FOUR_BIT_MASK  , VDS_LVL_Pos   );
+}
+
+void DRV8323_GetCSACtrl( DRV8323CSACtrl* csaCtrl )
+{
+    uint16_t reading = DRV8323_Read( CSA_CTRL );
+
+    csaCtrl->csa_fet   = extractBits( reading, SINGLE_BIT_MASK, CSA_FET_Pos   );
+    csaCtrl->vref_div  = extractBits( reading, SINGLE_BIT_MASK, VREF_DIV_Pos  );
+    csaCtrl->ls_ref    = extractBits( reading, SINGLE_BIT_MASK, LS_REF_Pos    );
+    csaCtrl->csa_gain  = extractBits( reading, TWO_BIT_MASK   , CSA_GAIN_Pos  );
+    csaCtrl->dis_sen   = extractBits( reading, SINGLE_BIT_MASK, DIS_SEN_Pos   );
+    csaCtrl->csa_cal_a = extractBits( reading, SINGLE_BIT_MASK, CSA_CAL_A_Pos );
+    csaCtrl->csa_cal_b = extractBits( reading, SINGLE_BIT_MASK, CSA_CAL_B_Pos );
+    csaCtrl->csa_cal_c = extractBits( reading, SINGLE_BIT_MASK, CSA_CAL_C_Pos );
+    csaCtrl->sen_lvl   = extractBits( reading, TWO_BIT_MASK   , SEN_LVL_Pos   );
+
+}
+

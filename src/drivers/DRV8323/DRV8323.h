@@ -23,6 +23,36 @@ typedef struct
 
 typedef struct
 {
+    uint8_t fault;
+    uint8_t vds_ocp;
+    uint8_t gdf;
+    uint8_t uvlo;
+    uint8_t otsd;
+    uint8_t vds_ha;
+    uint8_t vds_la;
+    uint8_t vds_hb;
+    uint8_t vds_lb;
+    uint8_t vds_hc;
+    uint8_t vds_lc;
+} DRV8323FaultStatus1;
+
+typedef struct
+{
+    uint8_t sa_oc;
+    uint8_t sb_oc;
+    uint8_t sc_oc;
+    uint8_t otw;
+    uint8_t cpuv;
+    uint8_t vgs_ha;
+    uint8_t vgs_la;
+    uint8_t vgs_hb;
+    uint8_t vgs_lb;
+    uint8_t vgs_hc;
+    uint8_t vgs_lc;
+} DRV8323FaultStatus2;
+
+typedef struct
+{
     uint8_t dis_cpuv;
     uint8_t dis_gdf;
     uint8_t otw_rep;
@@ -32,14 +62,14 @@ typedef struct
     uint8_t coast;
     uint8_t brake;
     uint8_t clr_flt;
-} DRV8323DriverCtrl_Config;
+} DRV8323DriverCtrl;
 
 typedef struct
 {
     uint8_t lock;
     uint8_t idrivep_hs;
     uint8_t idriven_hs;
-} DRV8323GateDriveHS_Config;
+} DRV8323GateDriveHS;
 
 typedef struct
 {
@@ -47,7 +77,7 @@ typedef struct
     uint8_t tdrive;
     uint8_t idrivep_ls;
     uint8_t idriven_ls;
-} DRV8323GateDriveLS_Config;
+} DRV8323GateDriveLS;
 
 typedef struct
 {
@@ -56,7 +86,7 @@ typedef struct
     uint8_t ocp_mode;
     uint8_t ocp_deg;
     uint8_t vds_lvl;
-} DRV8323OCPCtrl_Config;
+} DRV8323OCPCtrl;
 
 typedef struct
 {
@@ -69,7 +99,7 @@ typedef struct
     uint8_t csa_cal_b;
     uint8_t csa_cal_c;
     uint8_t sen_lvl;
-} DRV8323CSACtrl_Config;
+} DRV8323CSACtrl;
 
 
 DRV8323Status DRV8323_SetInterface( DRV8323Interface inter );
@@ -78,15 +108,28 @@ void DRV8323_Write( uint16_t data, uint8_t address );
 
 uint16_t DRV8323_Read( uint8_t address );
 
-void DRV8323_SetDriverCtrlReg( DRV8323DriverCtrl_Config* config );
+void DRV8323_SetDriverCtrl( DRV8323DriverCtrl* config );
 
-void DRV8323_SetGateDriveHSReg( DRV8323GateDriveHS_Config* config );
+void DRV8323_SetGateDriveHS( DRV8323GateDriveHS* config );
 
-void DRV8323_SetGateDriveLSReg( DRV8323GateDriveLS_Config* config );
+void DRV8323_SetGateDriveLS( DRV8323GateDriveLS* config );
 
-void DRV8323_SetOCPCtrlReg( DRV8323OCPCtrl_Config* config );
+void DRV8323_SetOCPCtrl( DRV8323OCPCtrl* config );
 
-void DRV8323_SetCSACtrlReg( DRV8323CSACtrl_Config* config );
+void DRV8323_SetCSACtrl( DRV8323CSACtrl* config );
 
+void DRV8323_GetFaultStatus1( DRV8323FaultStatus1* fstat1 );
+
+void DRV8323_GetFaultStatus2( DRV8323FaultStatus2* fstat2 );
+
+void DRV8323_GetDriverCtrl( DRV8323DriverCtrl* driverCtrl );
+
+void DRV8323_GetGateDriveHS( DRV8323GateDriveHS* gateDriveHS );
+
+void DRV8323_GetGateDriveLS( DRV8323GateDriveLS* gateDriveLS );
+
+void DRV8323_GetOCPCtrl( DRV8323OCPCtrl* ocpCtrl );
+
+void DRV8323_GetCSACtrl( DRV8323CSACtrl* csaCtrl );
 
 #endif

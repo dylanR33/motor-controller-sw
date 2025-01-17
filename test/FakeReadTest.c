@@ -9,13 +9,15 @@
 TEST_GROUP( FakeRead );
 
 
-uint16_t (*read)(uint16_t cmd);
+uint16_t (*read16)(uint16_t cmd);
+uint32_t (*read32)(uint32_t cmd);
 
 
 TEST_SETUP( FakeRead )
 {
     FakeRead_Create();
-    read = FakeRead_Read;
+    read16 = FakeRead_Read16;
+    read32 = FakeRead_Read32;
 }
 
 TEST_TEAR_DOWN( FakeRead )
@@ -24,23 +26,30 @@ TEST_TEAR_DOWN( FakeRead )
 
 TEST( FakeRead, Create )
 {
-    TEST_ASSERT_EQUAL( 0, FakeRead_GetLastCmd() );
-    TEST_ASSERT_EQUAL( 0, read( 0 ) );
+    TEST_ASSERT_EQUAL( 0, FakeRead_GetLastCmd16() );
+    TEST_ASSERT_EQUAL( 0, read16( 0 ) );
+
+    TEST_ASSERT_EQUAL( 0, FakeRead_GetLastCmd32() );
+    TEST_ASSERT_EQUAL( 0, read32( 0 ) );
 }
 
 
 TEST( FakeRead, SetNextReading )
 {
-    FakeRead_SetNextReading( 2 );
+    FakeRead_SetNextReading16( 2 );
+    TEST_ASSERT_EQUAL( 2, read16( 0 ) );
 
-    TEST_ASSERT_EQUAL( 2, read( 0 ) );
+    FakeRead_SetNextReading32( 5 );
+    TEST_ASSERT_EQUAL( 5, read32( 0 ) );
 }
 
 TEST( FakeRead, GetLastReading )
 {
-    read( 3 );
+    read16( 3 );
+    TEST_ASSERT_EQUAL( 3, FakeRead_GetLastCmd16() );
 
-    TEST_ASSERT_EQUAL( 3, FakeRead_GetLastCmd() );
+    read32( 5 );
+    TEST_ASSERT_EQUAL( 5, FakeRead_GetLastCmd32() );
 }
 
 

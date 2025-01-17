@@ -1,6 +1,5 @@
 #include "DRV8323.h"
 
-
 #include "unity.h"
 #include "unity_fixture.h"
 
@@ -19,7 +18,7 @@ TEST_SETUP( DRV8323 )
     DRV8323Interface interface = 
     {
         .spiWrite = WriteSpy_Write,
-        .spiRead = FakeRead_Read
+        .spiRead = FakeRead_Read16
     };
     DRV8323_SetInterface( interface );
 
@@ -42,7 +41,7 @@ TEST( DRV8323,  SetInterface_RequireBothInterfaces)
 
     TEST_ASSERT_EQUAL( DRV8323_INTERFACE_UNSET, DRV8323_SetInterface( interface ) );
     
-    interface.spiRead = FakeRead_Read;
+    interface.spiRead = FakeRead_Read16;
 
     TEST_ASSERT_EQUAL( DRV8323_INTERFACE_SET, DRV8323_SetInterface( interface ) );
 }
@@ -56,7 +55,7 @@ TEST( DRV8323, WriteMSBLow )
 TEST( DRV8323, ReadMSBHigh )
 {
     DRV8323_Read( 0x01 );
-    TEST_ASSERT_BIT_HIGH( 15 ,FakeRead_GetLastCmd() );
+    TEST_ASSERT_BIT_HIGH( 15 ,FakeRead_GetLastCmd16() );
 }
 
 TEST( DRV8323, PreventWriteToOutOfBoundsAddresses )
@@ -68,7 +67,7 @@ TEST( DRV8323, PreventWriteToOutOfBoundsAddresses )
 TEST( DRV8323, PreventReadToOutOfBoundsAddresses )
 {
     TEST_ASSERT_EQUAL( OUT_OF_BOUNDS_ADDRESS, DRV8323_Read( 0x08 ) );
-    TEST_ASSERT_EQUAL( 0, FakeRead_GetLastCmd() );
+    TEST_ASSERT_EQUAL( 0, FakeRead_GetLastCmd16() );
 }
 
 TEST( DRV8323, PreventWriteToReadOnlyAddresses )
@@ -86,7 +85,7 @@ TEST( DRV8323, RestrictDataToBits10Through0 )
 TEST( DRV8323, ReadDataBitsCleared )
 {
     DRV8323_Read( 0x05 );
-    TEST_ASSERT_BITS_LOW( 0x07FF, FakeRead_GetLastCmd() );
+    TEST_ASSERT_BITS_LOW( 0x07FF, FakeRead_GetLastCmd16() );
 }
 
 TEST( DRV8323, WritePlaceAddressInBits14Through11 )
@@ -98,7 +97,7 @@ TEST( DRV8323, WritePlaceAddressInBits14Through11 )
 TEST( DRV8323, ReadPlaceAddressInBits14Through11 )
 {
     DRV8323_Read( 0x05 );
-    TEST_ASSERT_BITS( 0x7800, 0x2800, FakeRead_GetLastCmd() );
+    TEST_ASSERT_BITS( 0x7800, 0x2800, FakeRead_GetLastCmd16() );
 }
 
 TEST( DRV8323, SetDriverCtrlMemberBitsPlacedCorrectly )
@@ -179,7 +178,7 @@ TEST( DRV8323, SetCSACtrlMemberBitsPlacedCorrectly )
 
 TEST( DRV8323, GetFaultStatus1MemberBitsExtractedCorrectly )
 {
-    FakeRead_SetNextReading( 0x0555 );
+    FakeRead_SetNextReading16( 0x0555 );
 
     DRV8323FaultStatus1 fstat1 = { 0 };
     DRV8323_GetFaultStatus1( &fstat1 );
@@ -198,7 +197,7 @@ TEST( DRV8323, GetFaultStatus1MemberBitsExtractedCorrectly )
 
 TEST( DRV8323, GetFaultStatus2MemberBitsExtractedCorrectly )
 {
-    FakeRead_SetNextReading( 0x0555 );
+    FakeRead_SetNextReading16( 0x0555 );
 
     DRV8323FaultStatus2 fstat2 = { 0 };
     DRV8323_GetFaultStatus2( &fstat2 );
@@ -217,7 +216,7 @@ TEST( DRV8323, GetFaultStatus2MemberBitsExtractedCorrectly )
 
 TEST( DRV8323, GetDriverCtrlMemberBitsExtractedCorrectly )
 {
-    FakeRead_SetNextReading( 0x0555 );
+    FakeRead_SetNextReading16( 0x0555 );
 
     DRV8323DriverCtrl driverCtrl = { 0 };
     DRV8323_GetDriverCtrl( &driverCtrl );
@@ -234,7 +233,7 @@ TEST( DRV8323, GetDriverCtrlMemberBitsExtractedCorrectly )
 
 TEST( DRV8323, GetGateDriveHSMemberBitsExtractedCorrectly )
 {
-    FakeRead_SetNextReading( 0x0555 );
+    FakeRead_SetNextReading16( 0x0555 );
 
     DRV8323GateDriveHS gateDriveHS = { 0 };
     DRV8323_GetGateDriveHS( &gateDriveHS );
@@ -245,7 +244,7 @@ TEST( DRV8323, GetGateDriveHSMemberBitsExtractedCorrectly )
 
 TEST( DRV8323, GetGateDriveLSMemberBitsExtractedCorrectly )
 {
-    FakeRead_SetNextReading( 0x0555 );
+    FakeRead_SetNextReading16( 0x0555 );
 
     DRV8323GateDriveLS gateDriveLS = { 0 };
     DRV8323_GetGateDriveLS( &gateDriveLS );
@@ -257,7 +256,7 @@ TEST( DRV8323, GetGateDriveLSMemberBitsExtractedCorrectly )
 
 TEST( DRV8323, GetOCPCtrlMemberBitsExtractedCorrectly )
 {
-    FakeRead_SetNextReading( 0x0555 );
+    FakeRead_SetNextReading16( 0x0555 );
 
     DRV8323OCPCtrl ocpCtrl = { 0 };
     DRV8323_GetOCPCtrl( &ocpCtrl );
@@ -270,7 +269,7 @@ TEST( DRV8323, GetOCPCtrlMemberBitsExtractedCorrectly )
 
 TEST( DRV8323, GetCSACtrlMemberBitsExtractedCorrectly )
 {
-    FakeRead_SetNextReading( 0x0555 );
+    FakeRead_SetNextReading16( 0x0555 );
 
     DRV8323CSACtrl csaCtrl = { 0 };
     DRV8323_GetCSACtrl( &csaCtrl );
@@ -284,3 +283,4 @@ TEST( DRV8323, GetCSACtrlMemberBitsExtractedCorrectly )
     TEST_ASSERT_EQUAL( 1, csaCtrl.csa_cal_c );
     TEST_ASSERT_EQUAL( 1, csaCtrl.sen_lvl   );
 }
+

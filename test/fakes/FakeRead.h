@@ -5,11 +5,17 @@
 
 void FakeRead_Create();
 
-void FakeRead_SetNextReading(uint16_t reading);
+void FakeRead_SetNextReading16(uint16_t fakeReading);
 
-uint16_t FakeRead_GetLastCmd();
+void FakeRead_SetNextReading32(uint32_t fakeReading);
 
-uint16_t FakeRead_Read(uint16_t cmd);
+uint16_t FakeRead_GetLastCmd16();
+
+uint32_t FakeRead_GetLastCmd32();
+
+uint16_t FakeRead_Read16(uint16_t cmd);
+
+uint32_t FakeRead_Read32(uint32_t cmd);
 
 #endif
 

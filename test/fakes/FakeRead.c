@@ -2,27 +2,49 @@
 
 #include <stdint.h>
 
-static uint16_t nextRead = 0;
-static uint16_t lastCmd = 0;
+static uint16_t nextRead16 = 0;
+static uint16_t lastCmd16  = 0;
+
+static uint32_t nextRead32 = 0;
+static uint32_t lastCmd32  = 0;
 
 void FakeRead_Create()
 {
-    nextRead = 0;
-    lastCmd = 0;
+    nextRead16 = 0;
+    lastCmd16  = 0;
+
+    nextRead32 = 0;
+    lastCmd32  = 0;
 }
 
-void FakeRead_SetNextReading(uint16_t fakeReading)
+void FakeRead_SetNextReading16(uint16_t fakeReading)
 {
-    nextRead = fakeReading;
+    nextRead16 = fakeReading;
 }
 
-uint16_t FakeRead_GetLastCmd()
+void FakeRead_SetNextReading32(uint32_t fakeReading)
 {
-    return lastCmd;
+    nextRead32 = fakeReading;
 }
 
-uint16_t FakeRead_Read(uint16_t cmd)
+uint16_t FakeRead_GetLastCmd16()
 {
-    lastCmd = cmd;
-    return nextRead;
+    return lastCmd16;
+}
+
+uint32_t FakeRead_GetLastCmd32()
+{
+    return lastCmd32;
+}
+
+uint16_t FakeRead_Read16(uint16_t cmd)
+{
+    lastCmd16 = cmd;
+    return nextRead16;
+}
+
+uint32_t FakeRead_Read32(uint32_t cmd)
+{
+    lastCmd32 = cmd;
+    return nextRead32;
 }

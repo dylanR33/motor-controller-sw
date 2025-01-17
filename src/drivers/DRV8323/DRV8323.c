@@ -20,16 +20,6 @@ enum
     FOUR_BIT_MASK = 0xF
 };
 
-typedef enum
-{
-    FAULT_STATUS1,
-    FAULT_STATUS2,
-    DRIVER_CTRL,
-    GATE_DRIVE_HS,
-    GATE_DRIVE_LS,
-    OCP_CTRL,
-    CSA_CTRL
-} DRV8323_Register;
 
 typedef enum
 {

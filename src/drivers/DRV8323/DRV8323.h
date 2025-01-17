@@ -15,6 +15,17 @@ enum
     OUT_OF_BOUNDS_ADDRESS
 };
 
+typedef enum
+{
+    FAULT_STATUS1,
+    FAULT_STATUS2,
+    DRIVER_CTRL,
+    GATE_DRIVE_HS,
+    GATE_DRIVE_LS,
+    OCP_CTRL,
+    CSA_CTRL
+} DRV8323_Register;
+
 typedef struct
 {
     void     ( *spiWrite ) ( uint16_t cmdOut );
@@ -101,6 +112,16 @@ typedef struct
     uint8_t sen_lvl;
 } DRV8323CSACtrl;
 
+typedef struct
+{
+    DRV8323FaultStatus1 faultStat1;
+    DRV8323FaultStatus2 faultStat2;
+    DRV8323DriverCtrl   driverCtrl;
+    DRV8323GateDriveHS  gateDriveHS;
+    DRV8323GateDriveLS  gateDriveLS;
+    DRV8323OCPCtrl      ocpCtrl;
+    DRV8323CSACtrl      csaCtrl;
+} DRV8323Registers;
 
 DRV8323Status DRV8323_SetInterface( DRV8323Interface inter );
 

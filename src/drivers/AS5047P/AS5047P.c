@@ -65,6 +65,17 @@ static int isAddressOutOfBounds( uint16_t address )
 }
 
 
+static int areParityBitsSet( uint32_t reading )
+{
+    return ( reading & 0x80000000 ) && ( reading & 0x00008000 );
+}
+
+
+static int isEFBitSet( uint32_t reading )
+{
+    return reading & 0x00004000;
+}
+
 void AS5047P_Write( uint32_t data, uint16_t address )
 {
     // return if read only address
@@ -104,11 +115,11 @@ uint32_t AS5047P_Read( uint16_t address )
     uint32_t readingBack = interface.spiRead( cmdOut );
 
     // Check if parity bits back are set, if not fail
-    if ( ! ( ( readingBack & 0x80000000 ) && ( readingBack & 0x00008000 ) ) )
+    if ( !areParityBitsSet( readingBack ) )
         return AS5047P_PARITY_FAIL;
     
     // Check if EF bit is set, if so fail
-    if ( readingBack & 0x00004000 )
+    if ( isEFBitSet( readingBack ) )
         return AS5047P_EF_FAIL;
 
     return readingBack;

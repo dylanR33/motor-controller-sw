@@ -1,6 +1,6 @@
 #include "DRV8323.h"
 
-#include <stdio.h>
+#include <stddef.h>
 
 static DRV8323Interface interface = {NULL};
 

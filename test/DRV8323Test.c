@@ -17,7 +17,7 @@ TEST_SETUP( DRV8323 )
 {
     DRV8323Interface interface = 
     {
-        .spiWrite = WriteSpy_Write,
+        .spiWrite = WriteSpy_Write16,
         .spiRead = FakeRead_Read16
     };
     DRV8323_SetInterface( interface );
@@ -35,7 +35,7 @@ TEST( DRV8323,  SetInterface_RequireBothInterfaces)
 {
     DRV8323Interface interface = 
     {
-        .spiWrite = WriteSpy_Write,
+        .spiWrite = WriteSpy_Write16,
         .spiRead = NULL
     };
 
@@ -49,7 +49,7 @@ TEST( DRV8323,  SetInterface_RequireBothInterfaces)
 TEST( DRV8323, WriteMSBLow )
 {
     DRV8323_Write( 0xFFFF, 0x03 );
-    TEST_ASSERT_BIT_LOW( 15, WriteSpy_GetLastWrite() );
+    TEST_ASSERT_BIT_LOW( 15, WriteSpy_GetLastWrite16() );
 }
 
 TEST( DRV8323, ReadMSBHigh )
@@ -61,7 +61,7 @@ TEST( DRV8323, ReadMSBHigh )
 TEST( DRV8323, PreventWriteToOutOfBoundsAddresses )
 {
     DRV8323_Write( 0xFFFF, 0x07 );
-    TEST_ASSERT_EQUAL( 0, WriteSpy_GetLastWrite() );
+    TEST_ASSERT_EQUAL( 0, WriteSpy_GetLastWrite16() );
 }
 
 TEST( DRV8323, PreventReadToOutOfBoundsAddresses )
@@ -73,13 +73,13 @@ TEST( DRV8323, PreventReadToOutOfBoundsAddresses )
 TEST( DRV8323, PreventWriteToReadOnlyAddresses )
 {
     DRV8323_Write( 0xFFFF, 0x01 );
-    TEST_ASSERT_EQUAL( 0, WriteSpy_GetLastWrite() );
+    TEST_ASSERT_EQUAL( 0, WriteSpy_GetLastWrite16() );
 }
 
 TEST( DRV8323, RestrictDataToBits10Through0 )
 {
     DRV8323_Write( 0xFFFF, 0x02 );
-    TEST_ASSERT_EQUAL_HEX16( 0x17FF, WriteSpy_GetLastWrite() );
+    TEST_ASSERT_EQUAL_HEX16( 0x17FF, WriteSpy_GetLastWrite16() );
 }
 
 TEST( DRV8323, ReadDataBitsCleared )
@@ -91,7 +91,7 @@ TEST( DRV8323, ReadDataBitsCleared )
 TEST( DRV8323, WritePlaceAddressInBits14Through11 )
 {
     DRV8323_Write( 0xFFFF, 0x05 );
-    TEST_ASSERT_BITS( 0x7800, 0x2800, WriteSpy_GetLastWrite() );
+    TEST_ASSERT_BITS( 0x7800, 0x2800, WriteSpy_GetLastWrite16() );
 }
 
 TEST( DRV8323, ReadPlaceAddressInBits14Through11 )
@@ -116,7 +116,7 @@ TEST( DRV8323, SetDriverCtrlMemberBitsPlacedCorrectly )
     };
 
     DRV8323_SetDriverCtrl( &config );
-    TEST_ASSERT_BITS( 0x07FF, 0x02B5, WriteSpy_GetLastWrite() );
+    TEST_ASSERT_BITS( 0x07FF, 0x02B5, WriteSpy_GetLastWrite16() );
 }
 
 TEST( DRV8323, SetGateDriveHSMemberBitsPlacedCorrectly )
@@ -128,7 +128,7 @@ TEST( DRV8323, SetGateDriveHSMemberBitsPlacedCorrectly )
         .idriven_hs = 10
     };
     DRV8323_SetGateDriveHS( &config );
-    TEST_ASSERT_BITS( 0x07FF, 0x039A, WriteSpy_GetLastWrite() );
+    TEST_ASSERT_BITS( 0x07FF, 0x039A, WriteSpy_GetLastWrite16() );
 }
 
 TEST( DRV8323, SetGateDriveLSMemberBitsPlacedCorrectly )
@@ -141,7 +141,7 @@ TEST( DRV8323, SetGateDriveLSMemberBitsPlacedCorrectly )
         .idriven_ls = 15
     };
     DRV8323_SetGateDriveLS( &config );
-    TEST_ASSERT_BITS( 0x07FF, 0x015F, WriteSpy_GetLastWrite() );
+    TEST_ASSERT_BITS( 0x07FF, 0x015F, WriteSpy_GetLastWrite16() );
 }
 
 TEST( DRV8323, SetOCPCtrlMemberBitsPlacedCorrectly )
@@ -155,7 +155,7 @@ TEST( DRV8323, SetOCPCtrlMemberBitsPlacedCorrectly )
         .vds_lvl = 12
     };
     DRV8323_SetOCPCtrl( &config );
-    TEST_ASSERT_BITS( 0x07FF, 0x046C, WriteSpy_GetLastWrite() );
+    TEST_ASSERT_BITS( 0x07FF, 0x046C, WriteSpy_GetLastWrite16() );
 }
 
 TEST( DRV8323, SetCSACtrlMemberBitsPlacedCorrectly )
@@ -173,7 +173,7 @@ TEST( DRV8323, SetCSACtrlMemberBitsPlacedCorrectly )
         .sen_lvl = 2
     };
     DRV8323_SetCSACtrl( &config );
-    TEST_ASSERT_BITS( 0x07FF, 0x5A6, WriteSpy_GetLastWrite() );
+    TEST_ASSERT_BITS( 0x07FF, 0x5A6, WriteSpy_GetLastWrite16() );
 }
 
 TEST( DRV8323, GetFaultStatus1MemberBitsExtractedCorrectly )

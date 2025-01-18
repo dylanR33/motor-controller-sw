@@ -5,8 +5,13 @@
 
 void WriteSpy_Create();
 
-uint16_t WriteSpy_GetLastWrite();
+uint16_t WriteSpy_GetLastWrite16();
 
-void WriteSpy_Write( uint16_t cmd );
+uint32_t WriteSpy_GetLastWrite32();
+
+void WriteSpy_Write16( uint16_t cmd );
+
+void WriteSpy_Write32( uint32_t cmd );
+
 #endif
 

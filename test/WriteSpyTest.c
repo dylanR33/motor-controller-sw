@@ -9,11 +9,15 @@
 TEST_GROUP( WriteSpy );
 
 
-void (*write)(uint16_t cmd);
+void (*write16)(uint16_t cmd);
+void (*write32)(uint32_t cmd);
 
 
 TEST_SETUP( WriteSpy )
 {
+    WriteSpy_Create();
+    write16 = WriteSpy_Write16;
+    write32 = WriteSpy_Write32;
 }
 
 TEST_TEAR_DOWN( WriteSpy )
@@ -22,18 +26,16 @@ TEST_TEAR_DOWN( WriteSpy )
 
 TEST( WriteSpy, Create )
 {
-    WriteSpy_Create();
-    TEST_ASSERT_EQUAL( 0, WriteSpy_GetLastWrite() );
+    TEST_ASSERT_EQUAL( 0, WriteSpy_GetLastWrite16() );
+    TEST_ASSERT_EQUAL( 0, WriteSpy_GetLastWrite32() );
 }
 
 
 TEST( WriteSpy, GetLastWrite )
 {
-    WriteSpy_Create();
+    write16( 4 );
+    TEST_ASSERT_EQUAL( 4, WriteSpy_GetLastWrite16() );
 
-    write = WriteSpy_Write;
-
-    write( 4 );
-
-    TEST_ASSERT_EQUAL( 4, WriteSpy_GetLastWrite() );
+    write32( 5 );
+    TEST_ASSERT_EQUAL( 5, WriteSpy_GetLastWrite32() );
 } 

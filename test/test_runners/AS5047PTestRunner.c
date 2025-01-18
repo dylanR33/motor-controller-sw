@@ -14,4 +14,6 @@ TEST_GROUP_RUNNER( AS5047P )
     RUN_TEST_CASE( AS5047P, RestrictDataBitsToBits13Through0 );
     RUN_TEST_CASE( AS5047P, ReadDataBitsCleared );
     RUN_TEST_CASE( AS5047P, PreventReadFromOutOfBoundsAddress );
+    RUN_TEST_CASE( AS5047P, ReadEnsuresParityBitsBackAreSet );
+    RUN_TEST_CASE( AS5047P, ReadEnsuresEFBackIsLow );
 }

@@ -114,3 +114,20 @@ TEST( AS5047P, PreventReadFromOutOfBoundsAddress )
     TEST_ASSERT_EQUAL( 0, FakeRead_GetLastCmd32() );
 }
 
+TEST( AS5047P, ReadEnsuresParityBitsBackAreSet )
+{
+    FakeRead_SetNextReading32( 0x000000FF );
+    TEST_ASSERT_EQUAL( AS5047P_PARITY_FAIL, AS5047P_Read( PROG ) );
+
+    FakeRead_SetNextReading32( 0x000080FF );
+    TEST_ASSERT_EQUAL( AS5047P_PARITY_FAIL, AS5047P_Read( PROG ) );
+
+    FakeRead_SetNextReading32( 0x800000FF );
+    TEST_ASSERT_EQUAL( AS5047P_PARITY_FAIL, AS5047P_Read( PROG ) );
+}
+
+TEST( AS5047P, ReadEnsuresEFBackIsLow )
+{
+    FakeRead_SetNextReading32( 0x8000C0FF );
+    TEST_ASSERT_EQUAL( AS5047P_EF_FAIL, AS5047P_Read( PROG ) );
+}

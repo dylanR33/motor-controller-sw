@@ -101,5 +101,15 @@ uint32_t AS5047P_Read( uint16_t address )
     // Set parity and EF bits low
     clearParityAndEFBits( &cmdOut );
 
-    return interface.spiRead( cmdOut );
+    uint32_t readingBack = interface.spiRead( cmdOut );
+
+    // Check if parity bits back are set, if not fail
+    if ( ! ( ( readingBack & 0x80000000 ) && ( readingBack & 0x00008000 ) ) )
+        return AS5047P_PARITY_FAIL;
+    
+    // Check if EF bit is set, if so fail
+    if ( readingBack & 0x00004000 )
+        return AS5047P_EF_FAIL;
+
+    return readingBack;
 }

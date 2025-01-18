@@ -10,10 +10,27 @@ typedef enum
     AS5047P_INTERFACE_UNSET
 } AS5047PStatus;
 
+
 enum
 {
     AS5047P_OUT_OF_BOUNDS_ADDRESS
 };
+
+
+typedef enum
+{
+    NOP,
+    ERRFL,
+    PROG      = 0x0003,
+    DIAAGC    = 0x3FFC,
+    MAG,
+    ANGLEUNC,
+    ANGLECOM,
+    ZPOSM     = 0x0016,
+    ZPOSL,
+    SETTINGS1,
+    SETTINGS2
+} AS5047PRegister;
 
 
 typedef struct

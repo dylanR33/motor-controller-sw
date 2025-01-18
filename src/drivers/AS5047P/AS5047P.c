@@ -19,25 +19,68 @@ AS5047PStatus AS5047P_SetInterface( AS5047PInterface inter )
 }
 
 
-void AS5047P_Write( uint32_t data, uint16_t address )
+static int isAddressReadOnly( uint16_t address )
 {
-    // return if read only address
-    if ( ( address < 0x0016 || address > 0x0019 ) && address != 0x0003 )
-        return;
+    return ( ( address < ZPOSM || address > SETTINGS2 ) && address != PROG );
+}
 
-    // Clear command frame portion
-    data &= ~( 0xFFFF0000 );
-    
+
+static void clearCmdFrame( uint32_t* data )
+{
+    *data &= ~( 0xFFFF0000 );
+}
+
+
+static void placeAddress( uint32_t* data, uint16_t address )
+{
     // remove extra bits off address
     address &= ~( 0xC000 );
     // Place address at bit 16
-    data |= address << 16;
+    *data |= address << 16;
+}
+
+
+static void clearReadWriteBit( uint32_t* data )
+{
+    *data &= ~( 0x40000000 );
+}
+
+
+static void setReadWriteBit( uint32_t* data )
+{
+    *data |= 0x40000000;
+}
+
+static void clearParityAndEFBits( uint32_t* data )
+{
+    *data &= ~( 0x8000C000 );
+}
+
+
+static int isAddressOutOfBounds( uint16_t address )
+{
+    return ( ( address < ZPOSM   ||   address >  SETTINGS2 ) &&
+             ( address < DIAAGC  ||   address >  ANGLECOM  ) &&
+             ( address > ERRFL ) && ( address != PROG      )    );
+}
+
+
+void AS5047P_Write( uint32_t data, uint16_t address )
+{
+    // return if read only address
+    if ( isAddressReadOnly( address ) )
+        return;
+
+    // Clear command frame portion
+    clearCmdFrame( &data );
+    
+    placeAddress( &data, address );
 
     // Set r/w bit low
-    data &= ~( 0x40000000 );
-    
+    clearReadWriteBit( &data ); 
+
     // Set parity and EF bits low
-    data &= ~( 0x8000C000 );
+    clearParityAndEFBits( &data );
 
     interface.spiWrite( data );
 }
@@ -45,25 +88,18 @@ void AS5047P_Write( uint32_t data, uint16_t address )
 
 uint32_t AS5047P_Read( uint16_t address )
 {
-    if ( ( address < 0x0016 || address > 0x0019 ) &&
-         ( address < 0x3FFC || address > 0x3FFF ) &&
-         ( address > 0x0001 ) &&
-         ( address != 0x0003 )
-       )
+    if ( isAddressOutOfBounds( address ) )
         return AS5047P_OUT_OF_BOUNDS_ADDRESS;
 
     uint32_t cmdOut = 0;
 
-    // remove extra bits off address
-    address &= ~( 0xC000 );
-    // Place address at bit 16
-    cmdOut |= address << 16;
+    placeAddress( &cmdOut, address );
     
     // Set r/w bit high
-    cmdOut |= 0x40000000;
+    setReadWriteBit( &cmdOut );
 
     // Set parity and EF bits low
-    cmdOut &= ~( 0x8000C000 );
+    clearParityAndEFBits( &cmdOut );
 
     return interface.spiRead( cmdOut );
 }

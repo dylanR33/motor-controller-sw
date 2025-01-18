@@ -131,3 +131,147 @@ TEST( AS5047P, ReadEnsuresEFBackIsLow )
     FakeRead_SetNextReading32( 0x8000C0FF );
     TEST_ASSERT_EQUAL( AS5047P_EF_FAIL, AS5047P_Read( PROG ) );
 }
+
+TEST( AS5047P, SetPROGMemberBitsPlacedCorrectly )
+{
+    AS5047PPROG cfg =
+    {
+        .progver = 1,
+        .progotp = 1,
+        .otpref  = 0,
+        .progen  = 1
+    };
+    AS5047P_SetPROG( &cfg );
+    TEST_ASSERT_BITS( 0x00003FFF, 0x00000049, WriteSpy_GetLastWrite32() );
+}
+
+TEST( AS5047P, SetZPOSMMemberBitsPlacedCorrectly )
+{
+    AS5047PZPOSM cfg =
+    {
+        .zposMSB = 15
+    };
+    AS5047P_SetZPOSM( &cfg );
+    TEST_ASSERT_BITS( 0x00003FFF, 0x0000000F, WriteSpy_GetLastWrite32() );
+}
+
+TEST( AS5047P, SetZPOSLMemberBitsPlacedCorrectly )
+{
+    AS5047PZPOSL cfg =
+    {
+        .zposLSB         = 17,
+        .comp_l_error_en = 1,
+        .comp_h_error_en = 0
+    };
+    AS5047P_SetZPOSL( &cfg );
+    TEST_ASSERT_BITS( 0x00003FFF, 0x0000051, WriteSpy_GetLastWrite32() );
+}
+
+TEST( AS5047P, SetSETTINGS1MemberBitsPlacedCorrectly )
+{
+    AS5047PSETTINGS1 cfg =
+    {
+        .dir             = 1,
+        .uvw_abi         = 0,
+        .daecdis         = 1,
+        .abibin          = 0,
+        .dataselect      = 1,
+        .pwmOn           = 0
+    };
+    AS5047P_SetSETTINGS1( &cfg );
+    TEST_ASSERT_BITS( 0x00003FFF, 0x00000054, WriteSpy_GetLastWrite32() );
+}
+
+TEST( AS5047P, SetSETTINGS2MemberBitsPlacedCorrectly )
+{
+    AS5047PSETTINGS2 cfg =
+    {
+        .uvwpp  = 6,
+        .hys    = 2,
+        .abires = 5
+    };
+    AS5047P_SetSETTINGS2( &cfg );
+    TEST_ASSERT_BITS( 0x00003FFF, 0x000000B6, WriteSpy_GetLastWrite32() );
+}
+
+TEST( AS5047P, SetPROGFailIfMembersBitsExceedExpected )
+{
+    AS5047PPROG cfg =
+    {
+        .progver = 5,
+        .progotp = 1,
+        .otpref  = 4,
+        .progen  = 100 
+    };
+    AS5047P_SetPROG( &cfg );
+    TEST_ASSERT_EQUAL( 0, WriteSpy_GetLastWrite32() );
+}
+
+// Not needed since zposm is 8 bits and the member is uint8_t
+// so it will not exceed
+//TEST( AS5047P, SetZPOSMFailIfMembersBitsExceedExpected )
+//{
+//}
+
+TEST( AS5047P, SetZPOSLFailIfMembersBitsExceedExpected )
+{
+    AS5047PZPOSL cfg =
+    {
+        .zposLSB = 200,
+        .comp_l_error_en = 2,
+        .comp_h_error_en = 2 
+    };
+    AS5047P_SetZPOSL( &cfg );
+    TEST_ASSERT_EQUAL( 0, WriteSpy_GetLastWrite32() );
+}
+
+TEST( AS5047P, SetSETTINGS1FailIfMembersBitsExceedExpected )
+{
+    AS5047PSETTINGS1 cfg =
+    {
+        .dir             = 39,
+        .uvw_abi         = 9,
+        .daecdis         = 1,
+        .abibin          = 8,
+        .dataselect      = 1,
+        .pwmOn           = 0
+    };
+    AS5047P_SetSETTINGS1( &cfg );
+    TEST_ASSERT_EQUAL( 0, WriteSpy_GetLastWrite32() );
+}
+
+TEST( AS5047P, SetSETTINGS2FailIfMembersBitsExceedExpected )
+{
+    AS5047PSETTINGS2 cfg =
+    {
+        .uvwpp  = 6,
+        .hys    = 5,
+        .abires = 8
+    };
+    AS5047P_SetSETTINGS2( &cfg );
+    TEST_ASSERT_EQUAL( 0, WriteSpy_GetLastWrite32() );
+}
+
+// if above is implemented then the following shouldn't be necessary
+// since not possible for bits to bleed into surrounding bit areas
+//
+//TEST( AS5047P, SetPROGNonSettableBitsLow )
+//{
+//}
+//
+//TEST( AS5047P, SetZPOSMNonSettableBitsLow )
+//{
+//}
+//
+//TEST( AS5047P, SetZPOSLNonSettableBitsLow )
+//{
+//}
+//
+//TEST( AS5047P, SetSETTINGS1NonSettableBitsLow )
+//{
+//}
+//
+//TEST( AS5047P, SetSETTINGS2NonSettableBitsLow )
+//{
+//}
+

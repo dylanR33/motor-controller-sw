@@ -16,4 +16,13 @@ TEST_GROUP_RUNNER( AS5047P )
     RUN_TEST_CASE( AS5047P, PreventReadFromOutOfBoundsAddress );
     RUN_TEST_CASE( AS5047P, ReadEnsuresParityBitsBackAreSet );
     RUN_TEST_CASE( AS5047P, ReadEnsuresEFBackIsLow );
+    RUN_TEST_CASE( AS5047P, SetPROGMemberBitsPlacedCorrectly );
+    RUN_TEST_CASE( AS5047P, SetZPOSMMemberBitsPlacedCorrectly );
+    RUN_TEST_CASE( AS5047P, SetZPOSLMemberBitsPlacedCorrectly );
+    RUN_TEST_CASE( AS5047P, SetSETTINGS1MemberBitsPlacedCorrectly );
+    RUN_TEST_CASE( AS5047P, SetSETTINGS2MemberBitsPlacedCorrectly );
+    RUN_TEST_CASE( AS5047P, SetPROGFailIfMembersBitsExceedExpected );
+    RUN_TEST_CASE( AS5047P, SetZPOSLFailIfMembersBitsExceedExpected );
+    RUN_TEST_CASE( AS5047P, SetSETTINGS1FailIfMembersBitsExceedExpected );
+    RUN_TEST_CASE( AS5047P, SetSETTINGS2FailIfMembersBitsExceedExpected );
 }

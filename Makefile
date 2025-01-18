@@ -1,8 +1,8 @@
-UTFS_MODULE_DIRS = test/fakes test/spys src/drivers/DRV8323
+UTFS_MODULE_DIRS = test/fakes test/spys src/drivers/DRV8323 src/drivers/AS5047P
 UTFS_TEST_DIR = test
 UTFS_BUILD_DIR = build
 
-CLISTM_SRC_DIRS = src src/drivers/DRV8323
+CLISTM_SRC_DIRS = src src/drivers/DRV8323 src/drivers/AS5047P
 CLISTM_BUILD_DIR = build
 CLISTM_MODEL_NUM = STM32F411xE
 CLISTM_HAL_MODULES = gpio

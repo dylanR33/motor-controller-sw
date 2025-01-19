@@ -232,14 +232,20 @@ uint32_t AS5047P_Read( uint16_t address )
 }
 
 
+static int isBitCountExceeded( uint16_t value, uint16_t bitCountMask )
+{
+    return ( value & ~bitCountMask );
+}
+
+
 void AS5047P_SetPROG( AS5047PPROG* config )
 {
 
     // Check if bits in members exceed expected
-    if ( config->progver & ~SINGLE_BIT_MASK ||
-         config->progotp & ~SINGLE_BIT_MASK ||
-         config->otpref  & ~SINGLE_BIT_MASK ||
-         config->progen  & ~SINGLE_BIT_MASK    )
+    if ( isBitCountExceeded( config->progver, SINGLE_BIT_MASK ) ||
+         isBitCountExceeded( config->progotp, SINGLE_BIT_MASK ) ||
+         isBitCountExceeded( config->otpref , SINGLE_BIT_MASK ) ||
+         isBitCountExceeded( config->progen , SINGLE_BIT_MASK )   )
         return;
 
     uint32_t dataOut = 0;
@@ -272,9 +278,9 @@ void AS5047P_SetZPOSM( AS5047PZPOSM* config )
 void AS5047P_SetZPOSL( AS5047PZPOSL* config )
 {
     // Check if bits in members exceed expected
-    if ( config->zposLSB         & ~SIX_BIT_MASK    ||
-         config->comp_l_error_en & ~SINGLE_BIT_MASK ||
-         config->comp_h_error_en & ~SINGLE_BIT_MASK    )
+    if ( isBitCountExceeded( config->zposLSB        , SIX_BIT_MASK    ) ||
+         isBitCountExceeded( config->comp_l_error_en, SINGLE_BIT_MASK ) ||
+         isBitCountExceeded( config->comp_h_error_en, SINGLE_BIT_MASK )   )
         return;
 
     uint32_t dataOut = 0;
@@ -289,12 +295,12 @@ void AS5047P_SetZPOSL( AS5047PZPOSL* config )
 
 void AS5047P_SetSETTINGS1( AS5047PSETTINGS1* config )
 {
-    if ( config->dir        & ~SINGLE_BIT_MASK ||
-         config->uvw_abi    & ~SINGLE_BIT_MASK ||
-         config->daecdis    & ~SINGLE_BIT_MASK ||
-         config->abibin     & ~SINGLE_BIT_MASK ||
-         config->dataselect & ~SINGLE_BIT_MASK ||
-         config->pwmOn      & ~SINGLE_BIT_MASK    )
+    if ( isBitCountExceeded( config->dir       , SINGLE_BIT_MASK ) ||
+         isBitCountExceeded( config->uvw_abi   , SINGLE_BIT_MASK ) ||
+         isBitCountExceeded( config->daecdis   , SINGLE_BIT_MASK ) ||
+         isBitCountExceeded( config->abibin    , SINGLE_BIT_MASK ) ||
+         isBitCountExceeded( config->dataselect, SINGLE_BIT_MASK ) ||
+         isBitCountExceeded( config->pwmOn     , SINGLE_BIT_MASK )   )
         return;
 
     uint32_t dataOut = 0;
@@ -312,9 +318,9 @@ void AS5047P_SetSETTINGS1( AS5047PSETTINGS1* config )
 
 void AS5047P_SetSETTINGS2( AS5047PSETTINGS2* config )
 {
-    if ( config->uvwpp  & ~THREE_BIT_MASK ||
-         config->hys    & ~TWO_BIT_MASK   ||
-         config->abires & ~THREE_BIT_MASK   )
+    if ( isBitCountExceeded( config->uvwpp , THREE_BIT_MASK ) ||
+         isBitCountExceeded( config->hys   , TWO_BIT_MASK   ) ||
+         isBitCountExceeded( config->abires, THREE_BIT_MASK )   )
         return;
 
     uint32_t dataOut = 0;

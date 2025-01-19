@@ -2,6 +2,7 @@
 
 #include <stddef.h>
 
+
 static AS5047PInterface interface = { NULL };
 
 
@@ -30,6 +31,7 @@ typedef enum
 {
     ADDR_Pos = 16
 } Frame_BitPos;
+
 
 typedef enum
 {
@@ -157,6 +159,7 @@ static void setReadWriteBit( uint32_t* data )
     *data |= READ_WRITE_BIT_MASK;
 }
 
+
 static void clearParityAndEFBits( uint32_t* data )
 {
     *data &= ~( PARC_MASK | PARD_MASK | EF_MASK );
@@ -181,6 +184,7 @@ static int isEFBitSet( uint32_t reading )
 {
     return reading & EF_MASK;
 }
+
 
 void AS5047P_Write( uint32_t data, uint16_t address )
 {

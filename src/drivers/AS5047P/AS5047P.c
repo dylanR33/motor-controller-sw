@@ -7,9 +7,9 @@ static AS5047PInterface interface = { NULL };
 
 enum
 {
-    SINGLE_BIT_MASK   = 0x1,
-    TWO_BIT_MASK      = 0x3,
-    THREE_BIT_MASK    = 0x7,
+    SINGLE_BIT_MASK   = 0x01,
+    TWO_BIT_MASK      = 0x03,
+    THREE_BIT_MASK    = 0x07,
     SIX_BIT_MASK      = 0x3F,
     EIGHT_BIT_MASK    = 0xFF,
     FOURTEEN_BIT_MASK = 0x3FFF
@@ -221,10 +221,10 @@ void AS5047P_SetPROG( AS5047PPROG* config )
 {
 
     // Check if bits in members exceed expected
-    if ( config->progver & ~0x01 ||
-         config->progotp & ~0x01 ||
-         config->otpref  & ~0x01 ||
-         config->progen  & ~0x01    )
+    if ( config->progver & ~SINGLE_BIT_MASK ||
+         config->progotp & ~SINGLE_BIT_MASK ||
+         config->otpref  & ~SINGLE_BIT_MASK ||
+         config->progen  & ~SINGLE_BIT_MASK    )
         return;
 
     uint32_t dataOut = 0;
@@ -257,9 +257,9 @@ void AS5047P_SetZPOSM( AS5047PZPOSM* config )
 void AS5047P_SetZPOSL( AS5047PZPOSL* config )
 {
     // Check if bits in members exceed expected
-    if ( config->zposLSB         & ~0x3F ||
-         config->comp_l_error_en & ~0x01 ||
-         config->comp_h_error_en & ~0x01    )
+    if ( config->zposLSB         & ~SIX_BIT_MASK    ||
+         config->comp_l_error_en & ~SINGLE_BIT_MASK ||
+         config->comp_h_error_en & ~SINGLE_BIT_MASK    )
         return;
 
     uint32_t dataOut = 0;
@@ -274,12 +274,12 @@ void AS5047P_SetZPOSL( AS5047PZPOSL* config )
 
 void AS5047P_SetSETTINGS1( AS5047PSETTINGS1* config )
 {
-    if ( config->dir & ~0x01 ||
-         config->uvw_abi & ~0x01 ||
-         config->daecdis & ~0x01 ||
-         config->abibin & ~0x01 ||
-         config->dataselect & ~0x01 ||
-         config->pwmOn & ~0x01          )
+    if ( config->dir        & ~SINGLE_BIT_MASK ||
+         config->uvw_abi    & ~SINGLE_BIT_MASK ||
+         config->daecdis    & ~SINGLE_BIT_MASK ||
+         config->abibin     & ~SINGLE_BIT_MASK ||
+         config->dataselect & ~SINGLE_BIT_MASK ||
+         config->pwmOn      & ~SINGLE_BIT_MASK    )
         return;
 
     uint32_t dataOut = 0;
@@ -297,9 +297,9 @@ void AS5047P_SetSETTINGS1( AS5047PSETTINGS1* config )
 
 void AS5047P_SetSETTINGS2( AS5047PSETTINGS2* config )
 {
-    if ( config->uvwpp & ~0x07 ||
-         config->hys & ~0x03 ||
-         config->abires & ~0x07 )
+    if ( config->uvwpp  & ~THREE_BIT_MASK ||
+         config->hys    & ~TWO_BIT_MASK   ||
+         config->abires & ~THREE_BIT_MASK   )
         return;
 
     uint32_t dataOut = 0;

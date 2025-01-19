@@ -2,22 +2,25 @@
 
 #include <stddef.h>
 
+
 static DRV8323Interface interface = {NULL};
+
 
 enum 
 {
-    RW_BIT = 0x8000,
+    RW_BIT              = 0x8000,
     ADDRESS_UPPER_BOUND = 0x06,
-    ADDRESS_START_BIT = 11,
-    NON_DATA_BITS = 0xF800,
+    ADDRESS_START_BIT   = 11,
+    NON_DATA_BITS       = 0xF800,
 };
+
 
 enum
 {
-    SINGLE_BIT_MASK = 1,
-    TWO_BIT_MASK = 0x3,
-    THREE_BIT_MASK = 0x7,
-    FOUR_BIT_MASK = 0xF
+    SINGLE_BIT_MASK = 0x01,
+    TWO_BIT_MASK    = 0x03,
+    THREE_BIT_MASK  = 0x07,
+    FOUR_BIT_MASK   = 0x0F
 };
 
 
@@ -36,6 +39,7 @@ typedef enum
     FAULT_Pos,
 } FaultStatus1_BitPos;
 
+
 typedef enum
 {
     VGS_LC_Pos,
@@ -51,6 +55,7 @@ typedef enum
     SA_OC_Pos,
 } FaultStatus2_BitPos;
 
+
 typedef enum
 {
     CLR_FLT_Pos,
@@ -65,29 +70,33 @@ typedef enum
     RESERVED_Pos
 } DriverCtrl_BitPos;
 
+
 typedef enum
 {
     IDRIVEN_HS_Pos,
     IDRIVEP_HS_Pos = 4,
-    LOCK_Pos = 8
+    LOCK_Pos       = 8
 } GateDriveHS_BitPos;
+
 
 typedef enum
 {
     IDRIVEN_LS_Pos,
     IDRIVEP_LS_Pos = 4,
-    TDRIVE_Pos = 8,
-    CBC_Pos = 10
+    TDRIVE_Pos     = 8,
+    CBC_Pos        = 10
 } GateDriveLS_BitPos;
+
 
 typedef enum
 {
     VDS_LVL_Pos,
-    OCP_DEG_Pos = 4,
-    OCP_MODE_Pos = 6,
+    OCP_DEG_Pos   = 4,
+    OCP_MODE_Pos  = 6,
     DEAD_TIME_Pos = 8,
-    TRETRY_Pos = 10
+    TRETRY_Pos    = 10
 } OCPCtrl_BitPos;
+
 
 typedef enum
 {
@@ -97,45 +106,53 @@ typedef enum
     CSA_CAL_A_Pos,
     DIS_SEN_Pos,
     CSA_GAIN_Pos,
-    LS_REF_Pos = 8,
+    LS_REF_Pos    = 8,
     VREF_DIV_Pos,
     CSA_FET_Pos
 } CSACtrl_BitPos;
  
+
 static int isAddressOutOfRange( uint8_t address )
 {
     return address > ADDRESS_UPPER_BOUND;
 }
+
 
 static int isInterfaceValid( DRV8323Interface inter )
 {
     return ( inter.spiRead && inter.spiWrite );
 }
 
+
 static int isAddressReadOnly( uint8_t address )
 {
     return ( address == FAULT_STATUS1 || address == FAULT_STATUS2 );
 }
+
 
 static void clearNonDataBits( uint16_t* data )
 {
     *data &= ~NON_DATA_BITS;
 }
 
+
 static void placeAddress( uint16_t* data, uint8_t address )
 {
     *data |= ( address << ADDRESS_START_BIT );
 }
+
 
 static void clearReadWriteBit( uint16_t* data )
 {
     *data &= ~RW_BIT;
 }
 
+
 static void setReadWriteBit( uint16_t* data )
 {
     *data |= RW_BIT;
 }
+
 
 DRV8323Status DRV8323_SetInterface( DRV8323Interface inter )
 {
@@ -181,18 +198,25 @@ uint16_t DRV8323_Read( uint8_t address )
     return interface.spiRead( cmdOut );
 }
 
+
+static int isBitCountExceeded( uint8_t value, uint8_t bitCountMask )
+{
+    return ( value & ~bitCountMask );
+}
+
+
 void DRV8323_SetDriverCtrl( DRV8323DriverCtrl* config )
 {
     // Check if bits in members exceed expected
-    if  ( config->dis_cpuv & ~0x01 ||
-          config->dis_gdf  & ~0x01 ||
-          config->otw_rep  & ~0x01 ||
-          config->pwm_mode & ~0x03 ||
-          config->pwm1_com & ~0x01 ||
-          config->pwm1_dir & ~0x01 ||
-          config->coast    & ~0x01 ||
-          config->brake    & ~0x01 ||
-          config->clr_flt  & ~0x01    )
+    if  ( isBitCountExceeded( config->dis_cpuv, SINGLE_BIT_MASK ) ||
+          isBitCountExceeded( config->dis_gdf , SINGLE_BIT_MASK ) ||
+          isBitCountExceeded( config->otw_rep , SINGLE_BIT_MASK ) ||
+          isBitCountExceeded( config->pwm_mode, TWO_BIT_MASK    ) ||
+          isBitCountExceeded( config->pwm1_com, SINGLE_BIT_MASK ) ||
+          isBitCountExceeded( config->pwm1_dir, SINGLE_BIT_MASK ) ||
+          isBitCountExceeded( config->coast   , SINGLE_BIT_MASK ) ||
+          isBitCountExceeded( config->brake   , SINGLE_BIT_MASK ) ||
+          isBitCountExceeded( config->clr_flt , SINGLE_BIT_MASK )    )
         return;
 
     uint16_t dataOut = 0;
@@ -215,9 +239,9 @@ void DRV8323_SetDriverCtrl( DRV8323DriverCtrl* config )
 
 void DRV8323_SetGateDriveHS( DRV8323GateDriveHS* config )
 {
-    if ( config->lock       & ~0x07 ||
-         config->idrivep_hs & ~0x0F ||
-         config->idriven_hs & ~0x0F     )
+    if ( isBitCountExceeded( config->lock      , THREE_BIT_MASK ) ||
+         isBitCountExceeded( config->idrivep_hs, FOUR_BIT_MASK  ) ||
+         isBitCountExceeded( config->idriven_hs, FOUR_BIT_MASK  )   )
         return;
 
     uint16_t dataOut = 0;
@@ -232,10 +256,10 @@ void DRV8323_SetGateDriveHS( DRV8323GateDriveHS* config )
 
 void DRV8323_SetGateDriveLS( DRV8323GateDriveLS* config )
 {
-    if ( config->cbc        & ~0x01 ||
-         config->tdrive     & ~0x03 ||
-         config->idrivep_ls & ~0x0F ||
-         config->idriven_ls & ~0x0F    )
+    if ( isBitCountExceeded( config->cbc       , SINGLE_BIT_MASK ) ||
+         isBitCountExceeded( config->tdrive    , TWO_BIT_MASK    ) ||
+         isBitCountExceeded( config->idrivep_ls, FOUR_BIT_MASK   ) ||
+         isBitCountExceeded( config->idriven_ls, FOUR_BIT_MASK   )    )
         return;
 
     uint16_t dataOut = 0;
@@ -251,11 +275,11 @@ void DRV8323_SetGateDriveLS( DRV8323GateDriveLS* config )
 
 void DRV8323_SetOCPCtrl( DRV8323OCPCtrl* config )
 {
-    if ( config->tretry     & ~0x01 ||
-         config->dead_time  & ~0x03 ||
-         config->ocp_mode   & ~0x03 ||
-         config->ocp_deg    & ~0x03 ||
-         config->vds_lvl    & ~0x0F     )
+    if ( isBitCountExceeded( config->tretry   , SINGLE_BIT_MASK ) ||
+         isBitCountExceeded( config->dead_time, TWO_BIT_MASK    ) ||
+         isBitCountExceeded( config->ocp_mode , TWO_BIT_MASK    ) ||
+         isBitCountExceeded( config->ocp_deg  , TWO_BIT_MASK    ) ||
+         isBitCountExceeded( config->vds_lvl  , FOUR_BIT_MASK   )   )
         return;
 
     uint16_t dataOut = 0;
@@ -272,15 +296,15 @@ void DRV8323_SetOCPCtrl( DRV8323OCPCtrl* config )
 
 void DRV8323_SetCSACtrl( DRV8323CSACtrl* config )
 {
-    if ( config->csa_fet   & ~0x01 ||
-         config->vref_div  & ~0x01 ||
-         config->ls_ref    & ~0x01 ||
-         config->csa_gain  & ~0x03 ||
-         config->dis_sen   & ~0x01 ||
-         config->csa_cal_a & ~0x01 ||
-         config->csa_cal_b & ~0x01 ||
-         config->csa_cal_c & ~0x01 ||
-         config->sen_lvl   & ~0x03   )
+    if ( isBitCountExceeded( config->csa_fet  , SINGLE_BIT_MASK ) ||
+         isBitCountExceeded( config->vref_div , SINGLE_BIT_MASK ) ||
+         isBitCountExceeded( config->ls_ref   , SINGLE_BIT_MASK ) ||
+         isBitCountExceeded( config->csa_gain , TWO_BIT_MASK    ) ||
+         isBitCountExceeded( config->dis_sen  , SINGLE_BIT_MASK ) ||
+         isBitCountExceeded( config->csa_cal_a, SINGLE_BIT_MASK ) ||
+         isBitCountExceeded( config->csa_cal_b, SINGLE_BIT_MASK ) ||
+         isBitCountExceeded( config->csa_cal_c, SINGLE_BIT_MASK ) ||
+         isBitCountExceeded( config->sen_lvl  , TWO_BIT_MASK    )   )
         return;
 
     uint16_t dataOut = 0;
@@ -387,6 +411,7 @@ void DRV8323_GetOCPCtrl( DRV8323OCPCtrl* ocpCtrl )
     ocpCtrl->vds_lvl   = extractBits( reading, FOUR_BIT_MASK  , VDS_LVL_Pos   );
 }
 
+
 void DRV8323_GetCSACtrl( DRV8323CSACtrl* csaCtrl )
 {
     uint16_t reading = DRV8323_Read( CSA_CTRL );
@@ -400,6 +425,5 @@ void DRV8323_GetCSACtrl( DRV8323CSACtrl* csaCtrl )
     csaCtrl->csa_cal_b = extractBits( reading, SINGLE_BIT_MASK, CSA_CAL_B_Pos );
     csaCtrl->csa_cal_c = extractBits( reading, SINGLE_BIT_MASK, CSA_CAL_C_Pos );
     csaCtrl->sen_lvl   = extractBits( reading, TWO_BIT_MASK   , SEN_LVL_Pos   );
-
 }
 

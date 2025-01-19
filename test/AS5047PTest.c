@@ -275,3 +275,124 @@ TEST( AS5047P, SetSETTINGS2FailIfMembersBitsExceedExpected )
 //{
 //}
 
+TEST( AS5047P, GetERRFLMemberBitsExtractedCorrectly )
+{
+    FakeRead_SetNextReading32( 0x8000815A );
+
+    AS5047PERRFL errfl = { 0 };
+    AS5047P_GetERRFL( &errfl );
+
+    TEST_ASSERT_EQUAL( 0, errfl.parerr  );
+    TEST_ASSERT_EQUAL( 1, errfl.invcomm );
+    TEST_ASSERT_EQUAL( 0, errfl.frerr   );
+}
+
+TEST( AS5047P, GetPROGMemberBitsExtractedCorrectly )
+{
+    FakeRead_SetNextReading32( 0x8000815A );
+
+    AS5047PPROG prog = { 0 };
+    AS5047P_GetPROG( &prog );
+
+    TEST_ASSERT_EQUAL( 1, prog.progver );
+    TEST_ASSERT_EQUAL( 1, prog.progotp );
+    TEST_ASSERT_EQUAL( 0, prog.otpref  );
+    TEST_ASSERT_EQUAL( 0, prog.progen  );
+}
+
+TEST( AS5047P, GetDIAAGCMemberBitsExtractedCorrectly )
+{
+    FakeRead_SetNextReading32( 0x8000815A );
+
+    AS5047PDIAAGC diaagc = { 0 };
+    AS5047P_GetDIAAGC( &diaagc );
+
+    TEST_ASSERT_EQUAL( 0, diaagc.magl );
+    TEST_ASSERT_EQUAL( 0, diaagc.magh );
+    TEST_ASSERT_EQUAL( 0, diaagc.cof );
+    TEST_ASSERT_EQUAL( 1, diaagc.lf );
+    TEST_ASSERT_EQUAL_HEX8( 0x5A, diaagc.agc );
+}
+
+TEST( AS5047P, GetMAGMemberBitsExtractedCorrectly )
+{
+    FakeRead_SetNextReading32( 0x8000815A );
+    
+    AS5047PMAG mag = { 0 };
+    AS5047P_GetMAG( &mag );
+
+    TEST_ASSERT_EQUAL_HEX16( 0x015A ,mag.mag );
+}
+
+TEST( AS5047P, GetANGLEUNCMemberBitsExtractedCorrectly )
+{
+    FakeRead_SetNextReading32( 0x8000815A );
+
+    AS5047PANGLEUNC angleunc = { 0 };
+    AS5047P_GetANGLEUNC( &angleunc );
+
+    TEST_ASSERT_EQUAL_HEX16( 0x015A , angleunc.angleunc );
+}
+
+TEST( AS5047P, GetANGLECOMMemberBitsExtractedCorrectly )
+{
+    FakeRead_SetNextReading32( 0x8000815A );
+
+    AS5047PANGLECOM anglecom = { 0 };
+    AS5047P_GetANGLECOM( &anglecom );
+
+    TEST_ASSERT_EQUAL_HEX16( 0x015A , anglecom.anglecom );
+
+}
+
+TEST( AS5047P, GetZPOSMMemberBitsExtractedCorrectly )
+{
+    FakeRead_SetNextReading32( 0x8000815A );
+
+    AS5047PZPOSM zposm = { 0 };
+    AS5047P_GetZPOSM( &zposm );
+
+    TEST_ASSERT_EQUAL_HEX8( 0x5A, zposm.zposMSB );
+
+}
+
+TEST( AS5047P, GetZPOSLMemberBitsExtractedCorrectly )
+{
+    FakeRead_SetNextReading32( 0x8000815A );
+
+    AS5047PZPOSL zposl = { 0 };
+    AS5047P_GetZPOSL( &zposl );
+
+    TEST_ASSERT_EQUAL( 26, zposl.zposLSB        );
+    TEST_ASSERT_EQUAL( 1, zposl.comp_l_error_en );
+    TEST_ASSERT_EQUAL( 0, zposl.comp_h_error_en );
+}
+
+TEST( AS5047P, GetSETTINGS1MemberBitsExtractedCorrectly )
+{
+    FakeRead_SetNextReading32( 0x8000815A );
+
+    AS5047PSETTINGS1 settings1 = { 0 };
+    AS5047P_GetSETTINGS1( &settings1 );
+
+    TEST_ASSERT_EQUAL( 0, settings1.factory_setting );
+    TEST_ASSERT_EQUAL( 1, settings1.not_used        );
+    TEST_ASSERT_EQUAL( 0, settings1.dir             );
+    TEST_ASSERT_EQUAL( 1, settings1.uvw_abi         );
+    TEST_ASSERT_EQUAL( 1, settings1.daecdis         );
+    TEST_ASSERT_EQUAL( 0, settings1.abibin          );
+    TEST_ASSERT_EQUAL( 1, settings1.dataselect      );
+    TEST_ASSERT_EQUAL( 0, settings1.pwmOn           );
+}
+
+TEST( AS5047P, GetSETTINGS2MemberBitsExtractedCorrectly )
+{
+    FakeRead_SetNextReading32( 0x8000815A );
+
+    AS5047PSETTINGS2 settings2 = { 0 };
+    AS5047P_GetSETTINGS2( &settings2 );
+
+    TEST_ASSERT_EQUAL( 2, settings2.uvwpp  );
+    TEST_ASSERT_EQUAL( 3, settings2.hys    );
+    TEST_ASSERT_EQUAL( 2, settings2.abires );
+}

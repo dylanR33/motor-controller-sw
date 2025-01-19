@@ -25,4 +25,14 @@ TEST_GROUP_RUNNER( AS5047P )
     RUN_TEST_CASE( AS5047P, SetZPOSLFailIfMembersBitsExceedExpected );
     RUN_TEST_CASE( AS5047P, SetSETTINGS1FailIfMembersBitsExceedExpected );
     RUN_TEST_CASE( AS5047P, SetSETTINGS2FailIfMembersBitsExceedExpected );
+    RUN_TEST_CASE( AS5047P, GetERRFLMemberBitsExtractedCorrectly );
+    RUN_TEST_CASE( AS5047P, GetPROGMemberBitsExtractedCorrectly );
+    RUN_TEST_CASE( AS5047P, GetDIAAGCMemberBitsExtractedCorrectly );
+    RUN_TEST_CASE( AS5047P, GetMAGMemberBitsExtractedCorrectly );
+    RUN_TEST_CASE( AS5047P, GetANGLEUNCMemberBitsExtractedCorrectly );
+    RUN_TEST_CASE( AS5047P, GetANGLECOMMemberBitsExtractedCorrectly );
+    RUN_TEST_CASE( AS5047P, GetZPOSMMemberBitsExtractedCorrectly );
+    RUN_TEST_CASE( AS5047P, GetZPOSLMemberBitsExtractedCorrectly );
+    RUN_TEST_CASE( AS5047P, GetSETTINGS1MemberBitsExtractedCorrectly );
+    RUN_TEST_CASE( AS5047P, GetSETTINGS2MemberBitsExtractedCorrectly );
 }

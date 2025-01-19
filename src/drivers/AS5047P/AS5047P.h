@@ -44,11 +44,47 @@ typedef struct
 
 typedef struct
 {
+    uint8_t parerr;
+    uint8_t invcomm;
+    uint8_t frerr;
+} AS5047PERRFL;
+
+
+typedef struct
+{
     uint8_t progver;
     uint8_t progotp;
     uint8_t otpref;
     uint8_t progen;
 } AS5047PPROG;
+
+
+typedef struct
+{
+    uint8_t magl;
+    uint8_t magh;
+    uint8_t cof;
+    uint8_t lf;
+    uint8_t agc;
+} AS5047PDIAAGC;
+
+
+typedef struct
+{
+    uint16_t mag;
+} AS5047PMAG;
+
+
+typedef struct
+{
+    uint16_t angleunc;
+} AS5047PANGLEUNC;
+
+
+typedef struct
+{
+    uint16_t anglecom;
+} AS5047PANGLECOM;
 
 
 typedef struct
@@ -101,5 +137,25 @@ void AS5047P_SetZPOSL( AS5047PZPOSL* config );
 void AS5047P_SetSETTINGS1( AS5047PSETTINGS1* config );
 
 void AS5047P_SetSETTINGS2( AS5047PSETTINGS2* config );
+
+void AS5047P_GetERRFL( AS5047PERRFL* errfl );
+
+void AS5047P_GetPROG( AS5047PPROG* prog );
+
+void AS5047P_GetDIAAGC( AS5047PDIAAGC* diaagc );
+
+void AS5047P_GetMAG( AS5047PMAG* mag );
+
+void AS5047P_GetANGLEUNC( AS5047PANGLEUNC* angleunc );
+
+void AS5047P_GetANGLECOM( AS5047PANGLECOM* anglecom );
+
+void AS5047P_GetZPOSM( AS5047PZPOSM* zposm );
+
+void AS5047P_GetZPOSL( AS5047PZPOSL* zposl );
+
+void AS5047P_GetSETTINGS1( AS5047PSETTINGS1* settings1 );
+
+void AS5047P_GetSETTINGS2( AS5047PSETTINGS2* settings2 );
 
 #endif

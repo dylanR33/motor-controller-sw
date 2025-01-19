@@ -18,6 +18,21 @@ enum
 
 typedef enum
 {
+    COMMAND_FRAME_MASK  = 0xFFFF0000,
+    READ_WRITE_BIT_MASK = 0x40000000,
+    PARC_MASK           = 0x80000000,
+    PARD_MASK           = 0x00008000,
+    EF_MASK             = 0x00004000,
+} FrameMasks;
+
+
+typedef enum
+{
+    ADDR_Pos = 16
+} Frame_BitPos;
+
+typedef enum
+{
     FRERR_Pos,
     INVCOMM_Pos,
     PARERR_Pos
@@ -118,7 +133,7 @@ static int isAddressReadOnly( uint16_t address )
 
 static void clearCmdFrame( uint32_t* data )
 {
-    *data &= ~( 0xFFFF0000 );
+    *data &= ~( COMMAND_FRAME_MASK );
 }
 
 
@@ -127,24 +142,24 @@ static void placeAddress( uint32_t* data, uint16_t address )
     // remove extra bits off address
     address &= ~( 0xC000 );
     // Place address at bit 16
-    *data |= address << 16;
+    *data |= address << ADDR_Pos;
 }
 
 
 static void clearReadWriteBit( uint32_t* data )
 {
-    *data &= ~( 0x40000000 );
+    *data &= ~( READ_WRITE_BIT_MASK );
 }
 
 
 static void setReadWriteBit( uint32_t* data )
 {
-    *data |= 0x40000000;
+    *data |= READ_WRITE_BIT_MASK;
 }
 
 static void clearParityAndEFBits( uint32_t* data )
 {
-    *data &= ~( 0x8000C000 );
+    *data &= ~( PARC_MASK | PARD_MASK | EF_MASK );
 }
 
 
@@ -158,13 +173,13 @@ static int isAddressOutOfBounds( uint16_t address )
 
 static int areParityBitsSet( uint32_t reading )
 {
-    return ( reading & 0x80000000 ) && ( reading & 0x00008000 );
+    return ( reading & PARC_MASK ) && ( reading & PARD_MASK );
 }
 
 
 static int isEFBitSet( uint32_t reading )
 {
-    return reading & 0x00004000;
+    return reading & EF_MASK;
 }
 
 void AS5047P_Write( uint32_t data, uint16_t address )

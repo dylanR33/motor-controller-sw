@@ -176,6 +176,82 @@ TEST( DRV8323, SetCSACtrlMemberBitsPlacedCorrectly )
     TEST_ASSERT_BITS( 0x07FF, 0x5A6, WriteSpy_GetLastWrite16() );
 }
 
+TEST( DRV8323, SetDriverCtrlFailIfMembersBitsExceedExpected )
+{
+    DRV8323DriverCtrl config =
+    {
+        .dis_cpuv = 2,
+        .dis_gdf = 0,
+        .otw_rep = 1,
+        .pwm_mode = 4,
+        .pwm1_com = 1,
+        .pwm1_dir = 3,
+        .coast = 1,
+        .brake = 0,
+        .clr_flt = 1
+    };
+
+    DRV8323_SetDriverCtrl( &config );
+    TEST_ASSERT_EQUAL( 0, WriteSpy_GetLastWrite16() );
+}
+
+TEST( DRV8323, SetGateDriveHSFailIfMembersBitsExceedExpected )
+{
+    DRV8323GateDriveHS config = 
+    {
+        .lock = 9,
+        .idrivep_hs = 16,
+        .idriven_hs = 10
+    };
+    DRV8323_SetGateDriveHS( &config );
+    TEST_ASSERT_EQUAL( 0, WriteSpy_GetLastWrite16() );
+}
+
+TEST( DRV8323, SetGateDriveLSFailIfMembersBitsExceedExpected )
+{
+    DRV8323GateDriveLS config = 
+    {
+        .cbc = 2,
+        .tdrive = 1,
+        .idrivep_ls = 5,
+        .idriven_ls = 16
+    };
+    DRV8323_SetGateDriveLS( &config );
+    TEST_ASSERT_EQUAL( 0, WriteSpy_GetLastWrite16() );
+}
+
+TEST( DRV8323, SetOCPCtrlFailIfMembersBitsExceedExpected )
+{
+    DRV8323OCPCtrl config = 
+    {
+        .tretry = 0,
+        .dead_time = 0,
+        .ocp_mode = 8,
+        .ocp_deg = 2,
+        .vds_lvl = 16
+    };
+    DRV8323_SetOCPCtrl( &config );
+    TEST_ASSERT_EQUAL( 0, WriteSpy_GetLastWrite16() );
+}
+
+TEST( DRV8323, SetCSACtrlFailIfMembersBitsExceedExpected )
+{
+    DRV8323CSACtrl config = 
+    {
+        .csa_fet = 2,
+        .vref_div = 0,
+        .ls_ref = 1,
+        .csa_gain = 2,
+        .dis_sen = 1,
+        .csa_cal_a = 0,
+        .csa_cal_b = 0,
+        .csa_cal_c = 1,
+        .sen_lvl = 2
+    };
+    DRV8323_SetCSACtrl( &config );
+    TEST_ASSERT_EQUAL( 0, WriteSpy_GetLastWrite16() );
+}
+
 TEST( DRV8323, GetFaultStatus1MemberBitsExtractedCorrectly )
 {
     FakeRead_SetNextReading16( 0x0555 );

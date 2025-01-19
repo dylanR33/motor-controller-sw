@@ -183,6 +183,18 @@ uint16_t DRV8323_Read( uint8_t address )
 
 void DRV8323_SetDriverCtrl( DRV8323DriverCtrl* config )
 {
+    // Check if bits in members exceed expected
+    if  ( config->dis_cpuv & ~0x01 ||
+          config->dis_gdf  & ~0x01 ||
+          config->otw_rep  & ~0x01 ||
+          config->pwm_mode & ~0x03 ||
+          config->pwm1_com & ~0x01 ||
+          config->pwm1_dir & ~0x01 ||
+          config->coast    & ~0x01 ||
+          config->brake    & ~0x01 ||
+          config->clr_flt  & ~0x01    )
+        return;
+
     uint16_t dataOut = 0;
 
     dataOut |= config->clr_flt  << CLR_FLT_Pos 
@@ -203,6 +215,11 @@ void DRV8323_SetDriverCtrl( DRV8323DriverCtrl* config )
 
 void DRV8323_SetGateDriveHS( DRV8323GateDriveHS* config )
 {
+    if ( config->lock       & ~0x07 ||
+         config->idrivep_hs & ~0x0F ||
+         config->idriven_hs & ~0x0F     )
+        return;
+
     uint16_t dataOut = 0;
 
     dataOut |= config->idriven_hs << IDRIVEN_HS_Pos
@@ -215,6 +232,12 @@ void DRV8323_SetGateDriveHS( DRV8323GateDriveHS* config )
 
 void DRV8323_SetGateDriveLS( DRV8323GateDriveLS* config )
 {
+    if ( config->cbc        & ~0x01 ||
+         config->tdrive     & ~0x03 ||
+         config->idrivep_ls & ~0x0F ||
+         config->idriven_ls & ~0x0F    )
+        return;
+
     uint16_t dataOut = 0;
 
     dataOut |= config->idriven_ls << IDRIVEN_LS_Pos
@@ -228,6 +251,13 @@ void DRV8323_SetGateDriveLS( DRV8323GateDriveLS* config )
 
 void DRV8323_SetOCPCtrl( DRV8323OCPCtrl* config )
 {
+    if ( config->tretry     & ~0x01 ||
+         config->dead_time  & ~0x03 ||
+         config->ocp_mode   & ~0x03 ||
+         config->ocp_deg    & ~0x03 ||
+         config->vds_lvl    & ~0x0F     )
+        return;
+
     uint16_t dataOut = 0;
     
     dataOut |= config->vds_lvl   << VDS_LVL_Pos
@@ -242,6 +272,17 @@ void DRV8323_SetOCPCtrl( DRV8323OCPCtrl* config )
 
 void DRV8323_SetCSACtrl( DRV8323CSACtrl* config )
 {
+    if ( config->csa_fet   & ~0x01 ||
+         config->vref_div  & ~0x01 ||
+         config->ls_ref    & ~0x01 ||
+         config->csa_gain  & ~0x03 ||
+         config->dis_sen   & ~0x01 ||
+         config->csa_cal_a & ~0x01 ||
+         config->csa_cal_b & ~0x01 ||
+         config->csa_cal_c & ~0x01 ||
+         config->sen_lvl   & ~0x03   )
+        return;
+
     uint16_t dataOut = 0;
 
     dataOut |= config->sen_lvl   << SEN_LVL_Pos

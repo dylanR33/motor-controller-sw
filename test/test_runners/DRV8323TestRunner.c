@@ -18,6 +18,11 @@ TEST_GROUP_RUNNER(DRV8323)
     RUN_TEST_CASE( DRV8323, SetGateDriveLSMemberBitsPlacedCorrectly );
     RUN_TEST_CASE( DRV8323, SetOCPCtrlMemberBitsPlacedCorrectly );
     RUN_TEST_CASE( DRV8323, SetCSACtrlMemberBitsPlacedCorrectly );
+    RUN_TEST_CASE( DRV8323, SetDriverCtrlFailIfMembersBitsExceedExpected );
+    RUN_TEST_CASE( DRV8323, SetGateDriveHSFailIfMembersBitsExceedExpected );
+    RUN_TEST_CASE( DRV8323, SetGateDriveLSFailIfMembersBitsExceedExpected );
+    RUN_TEST_CASE( DRV8323, SetOCPCtrlFailIfMembersBitsExceedExpected );
+    RUN_TEST_CASE( DRV8323, SetCSACtrlFailIfMembersBitsExceedExpected );
     RUN_TEST_CASE( DRV8323, GetFaultStatus1MemberBitsExtractedCorrectly );
     RUN_TEST_CASE( DRV8323, GetFaultStatus2MemberBitsExtractedCorrectly );
     RUN_TEST_CASE( DRV8323, GetDriverCtrlMemberBitsExtractedCorrectly );

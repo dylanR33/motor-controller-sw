@@ -2,3 +2,4 @@ build
 .clangd
 *.o
 *.d
+*.txt

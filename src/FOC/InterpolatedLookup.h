@@ -1,7 +1,8 @@
 #ifndef __INTERPOLATED_LOOKUP_H__
 #define __INTERPOLATED_LOOKUP_H__
 
-#define PI_2 1.570796327
+
+#include <stdint.h>
 
 
 typedef struct
@@ -14,7 +15,18 @@ typedef struct
 } Interpolation;
 
 
+typedef struct
+{
+    uint8_t length;
+    const float*  x_values;
+    const float*  y_values;
+} LookupTable;
+
+
 float InterpolatedLookup_Interpolate( Interpolation* i);
+
+
+float InterpolatedLookup_InterpolateLUT( float x, const LookupTable* lut );
 
 
 #endif

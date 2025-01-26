@@ -1,40 +1,48 @@
 #include "InterpolatedLookup.h"
 
 
-
 float InterpolatedLookup_Interpolate( Interpolation* i)
 {
-    if ( i->x < i->x0 )
+    if ( i->x <= i->x0 )
         return i->y0;
 
-    if ( i->x > i->x1 )
+    if ( i->x >= i->x1 )
         return i->y1;
 
     return i->y0 + ( ( i->x - i->x0 ) / ( i->x1 - i->x0 ) ) * ( i->y1 - i->y0 );
 }
 
 
-//const static float sin_lookup[21] =
-//{
-//    0.0,
-//    0.07853981633974483,
-//    0.15707963267948966,
-//    0.23561944901923448,
-//    0.3141592653589793,
-//    0.39269908169872414,
-//    0.47123889803846897,
-//    0.5497787143782138,
-//    0.6283185307179586,
-//    0.7068583470577035,
-//    0.7853981633974483,
-//    0.8639379797371931,
-//    0.9424777960769379,
-//    1.0210176124166828,
-//    1.0995574287564276,
-//    1.1780972450961724,
-//    1.2566370614359172,
-//    1.335176877775662,
-//    1.413716694115407,
-//    1.4922565104551517,
-//    1.5707963267948966
-//};
+float InterpolatedLookup_InterpolateLUT( float x, const LookupTable* lut )
+{
+    // x is under lower bound -> saturate to lowest y value
+    if ( x <= lut->x_values[0] )
+    {
+        return lut->y_values[0];
+    } // x is over upper bound -> saturate to highest y value
+    else if ( x >= lut->x_values[ lut->length - 1 ] )
+    {
+        return lut->y_values[ lut->length - 1 ];
+    }
+
+    // Search for x0 <= x <= x1
+    for ( uint8_t point = 0; point < ( lut->length - 1 ); point++ )
+    {
+        if ( ( lut->x_values[ point ] <= x ) && ( lut->x_values[ point + 1 ] >= x ) )
+        {
+            Interpolation i = 
+            {
+                .x = x,
+                .x0 = lut->x_values[ point ],
+                .x1 = lut->x_values[ point + 1 ],
+                .y0 = lut->y_values[ point ],
+                .y1 = lut->y_values[ point + 1 ]
+            };
+            return InterpolatedLookup_Interpolate( &i );
+        }
+    }
+
+    // If all checks fail return min
+    return lut->y_values[ 0 ];
+}
+

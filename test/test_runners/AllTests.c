@@ -8,6 +8,7 @@ static void RunAllTests(void)
     RUN_TEST_GROUP( AS5047P            );
     RUN_TEST_GROUP( Transform          );
     RUN_TEST_GROUP( InterpolatedLookup );
+    RUN_TEST_GROUP( Wave               );
 }
 
 int main(int argc, const char* argv[])

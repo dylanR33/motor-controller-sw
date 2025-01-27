@@ -33,7 +33,6 @@ TEST( Transform, ClarkeSampleInput )
     TEST_ASSERT_FLOAT_WITHIN( 0.001, 7.506, alphaBeta.beta  );
 }
 
-
 TEST( Transform, InverseClarkeSampleInput )
 {
     AlphaBeta alphaBeta =
@@ -51,4 +50,39 @@ TEST( Transform, InverseClarkeSampleInput )
     TEST_ASSERT_FLOAT_WITHIN( 0.001, -4.2321, abc.c  );
 }
 
+TEST( Transform, ParkSampleInput )
+{
+    AlphaBeta alphaBeta =
+    {
+        .alpha = 3.0,
+        .beta = 5.3
+    };
+
+    float theta = 3.259;
+
+    DirectQuadrature dq = { 0 };
+
+    Transform_Park( &alphaBeta, &dq , theta);
+
+    TEST_ASSERT_FLOAT_WITHIN( 0.015, -3.6002, dq.d );
+    TEST_ASSERT_FLOAT_WITHIN( 0.015, -4.9120, dq.q );
+}
+
+TEST( Transform, InverseParkSampleInput )
+{
+    DirectQuadrature dq =
+    {
+        .d = 2.59,
+        .q = 3.6
+    };
+
+    float theta = 2.52;
+
+    AlphaBeta alphaBeta = { 0 };
+
+    Transform_InversePark( &dq, &alphaBeta, theta );
+    
+    TEST_ASSERT_FLOAT_WITHIN( 0.015, -4.2019, alphaBeta.alpha );
+    TEST_ASSERT_FLOAT_WITHIN( 0.015, -1.4184, alphaBeta.beta  );
+}
 

@@ -5,6 +5,9 @@
 #include "stm32f4xx_hal_rcc.h"
 #include "stm32f4xx_hal_flash_ex.h"
 
+#include "RotaryEncoderSpi.h"
+#include "AS5047P.h"
+
 static void SystemClock_Config(void)
 {
   RCC_ClkInitTypeDef RCC_ClkInitStruct;
@@ -47,7 +50,22 @@ void main()
 
     SystemClock_Config();
 
-    // Application code ...
+    // // Application code ...
+ 
+    RotaryEncoderSpi_Config();
+    AS5047PInterface encoder =
+    {
+        .spiWrite = RotaryEncoderSpi_Write,
+        .spiRead  = RotaryEncoderSpi_Read
+    };
+    AS5047P_SetInterface( encoder );
+
+    AS5047PZPOSL cfg =
+    {
+        .zposLSB = 4,
+        .comp_l_error_en = 1,
+        .comp_h_error_en = 1
+    };
     
     // Super loop
     while (1)

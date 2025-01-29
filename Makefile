@@ -1,5 +1,7 @@
-sources = src/drivers/DRV8323 src/drivers/AS5047P src/FOC/Transform \
-		  src/FOC/Wave src/FOC/InterpolatedLookup
+sources = src/drivers/DRV8323 src/drivers/AS5047P \
+		  src/FOC/Transform src/FOC/Wave src/FOC/InterpolatedLookup \
+
+hw_sources = src/SpiInit src/SpiInit/GateDriverSpi src/SpiInit/RotaryEncoderSpi
 
 build = build
 
@@ -7,10 +9,10 @@ UTFS_MODULE_DIRS = test/fakes test/spys $(sources)
 UTFS_TEST_DIR = test
 UTFS_BUILD_DIR = $(build)
 
-CLISTM_SRC_DIRS = src $(sources)
+CLISTM_SRC_DIRS = src $(sources) $(hw_sources)
 CLISTM_BUILD_DIR = $(build)
 CLISTM_MODEL_NUM = STM32F446xx
-CLISTM_HAL_MODULES = gpio
+CLISTM_HAL_MODULES = gpio spi dma
 
 .PHONY: clean
 clean:

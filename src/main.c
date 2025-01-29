@@ -7,6 +7,7 @@
 
 #include "RotaryEncoderSpi.h"
 #include "GateDriverSpi.h"
+#include "UVWtim.h"
 
 #include "AS5047P.h"
 #include "DRV8323.h"
@@ -54,7 +55,7 @@ void main()
     SystemClock_Config();
 
     // // Application code ...
- 
+    
     RotaryEncoderSpi_Config();
     GateDriverSpi_Config();
     TimerConfig();
@@ -94,7 +95,16 @@ void main()
     {
         AS5047P_SetZPOSL( &cfg );
         DRV8323_SetGateDriveHS( &hs );
-    }
+
+        PwmAdjustPhaseA( 0x07FF );
+        HAL_Delay( 150 );
+
+        PwmAdjustPhaseA( 0x05FF );
+        HAL_Delay( 150 );
+
+        PwmAdjustPhaseA( 0x04FF );
+        HAL_Delay( 150 );
+   }
 }
 
 void Systick_Handler()

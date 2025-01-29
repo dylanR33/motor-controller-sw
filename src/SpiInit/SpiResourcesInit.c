@@ -23,24 +23,24 @@ void HAL_SPI_MspInit( SPI_HandleTypeDef* hspi )
         
         // Port C pins
         rotaryMiso.Pin       = GPIO_PIN_11;
-        rotaryMiso.Alternate = GPIO_AF5_SPI3;
+        rotaryMiso.Alternate = GPIO_AF6_SPI3;
         rotaryMiso.Mode      = GPIO_MODE_AF_PP;
-        rotaryMiso.Speed     = GPIO_SPEED_FREQ_MEDIUM;
+        rotaryMiso.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
 
         rotaryMosi.Pin       = GPIO_PIN_12;
-        rotaryMosi.Alternate = GPIO_AF5_SPI3;
+        rotaryMosi.Alternate = GPIO_AF6_SPI3;
         rotaryMosi.Mode      = GPIO_MODE_AF_PP;
-        rotaryMosi.Speed     = GPIO_SPEED_FREQ_MEDIUM;
+        rotaryMosi.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
 
         rotarySck.Pin        = GPIO_PIN_10;
-        rotarySck.Alternate  = GPIO_AF5_SPI3;
+        rotarySck.Alternate  = GPIO_AF6_SPI3;
         rotarySck.Mode       = GPIO_MODE_AF_PP;
-        rotarySck.Speed      = GPIO_SPEED_FREQ_MEDIUM;
+        rotarySck.Speed      = GPIO_SPEED_FREQ_VERY_HIGH;
 
         rotaryNss.Pin        = GPIO_PIN_15;
         //Nss.Alternate  = GPIO_AF5_SPI3;
         rotaryNss.Mode       = GPIO_MODE_OUTPUT_PP;
-        //Nss.Speed      = GPIO_SPEED_FREQ_MEDIUM;
+        //Nss.Speed      = GPIO_SPEED_FREQ_VERY_HIGH;
 
         HAL_GPIO_Init( GPIOC, &rotaryMiso );
         HAL_GPIO_Init( GPIOC, &rotaryMosi );
@@ -69,23 +69,23 @@ void HAL_SPI_MspInit( SPI_HandleTypeDef* hspi )
         gateMiso.Pin       = GPIO_PIN_6;
         gateMiso.Alternate = GPIO_AF5_SPI1;
         gateMiso.Mode      = GPIO_MODE_AF_PP;
-        gateMiso.Speed     = GPIO_SPEED_FREQ_MEDIUM;
+        gateMiso.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
 
         gateMosi.Pin       = GPIO_PIN_7;
         gateMosi.Alternate = GPIO_AF5_SPI1;
         gateMosi.Mode      = GPIO_MODE_AF_PP;
-        gateMosi.Speed     = GPIO_SPEED_FREQ_MEDIUM;
+        gateMosi.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
 
         gateSck.Pin        = GPIO_PIN_5;
         gateSck.Alternate  = GPIO_AF5_SPI1;
         gateSck.Mode       = GPIO_MODE_AF_PP;
-        gateSck.Speed      = GPIO_SPEED_FREQ_MEDIUM;
+        gateSck.Speed      = GPIO_SPEED_FREQ_VERY_HIGH;
 
         // Port A pins
         gateNss.Pin        = GPIO_PIN_4;
         //Nss.Alternate  = GPIO_AF5_SPI1;
         gateNss.Mode       = GPIO_MODE_OUTPUT_PP;
-        //Nss.Speed      = GPIO_SPEED_FREQ_MEDIUM;
+        //Nss.Speed      = GPIO_SPEED_FREQ_VERY_HIGH;
 
         HAL_GPIO_Init( GPIOA, &gateMiso );
         HAL_GPIO_Init( GPIOA, &gateMosi );

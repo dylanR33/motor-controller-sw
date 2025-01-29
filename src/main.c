@@ -6,7 +6,10 @@
 #include "stm32f4xx_hal_flash_ex.h"
 
 #include "RotaryEncoderSpi.h"
+#include "GateDriverSpi.h"
+
 #include "AS5047P.h"
+#include "DRV8323.h"
 
 static void SystemClock_Config(void)
 {
@@ -53,6 +56,9 @@ void main()
     // // Application code ...
  
     RotaryEncoderSpi_Config();
+    GateDriverSpi_Config();
+    TimerConfig();
+
     AS5047PInterface encoder =
     {
         .spiWrite = RotaryEncoderSpi_Write,
@@ -62,14 +68,32 @@ void main()
 
     AS5047PZPOSL cfg =
     {
-        .zposLSB = 4,
+        .zposLSB = 17,
         .comp_l_error_en = 1,
-        .comp_h_error_en = 1
+        .comp_h_error_en = 0
     };
-    
+
+    DRV8323Interface gateDriver =
+    {
+        .spiWrite = GateDriverSpi_Write,
+        .spiRead  = GateDriverSpi_Read
+    };
+    DRV8323_SetInterface( gateDriver );
+
+    DRV8323GateDriveHS hs = 
+    {
+        .lock = 3,
+        .idrivep_hs = 9,
+        .idriven_hs = 10
+    };
+   
+    HAL_Delay(1);
+
     // Super loop
     while (1)
     {
+        AS5047P_SetZPOSL( &cfg );
+        DRV8323_SetGateDriveHS( &hs );
     }
 }
 

@@ -58,7 +58,7 @@ void RotaryEncoderSpi_Config()
     RotaryEncoder_hspi.Init.CLKPolarity = SPI_POLARITY_LOW;
     RotaryEncoder_hspi.Init.CLKPhase = SPI_PHASE_1EDGE;
     RotaryEncoder_hspi.Init.NSS = SPI_NSS_SOFT;
-    RotaryEncoder_hspi.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
+    RotaryEncoder_hspi.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
     RotaryEncoder_hspi.Init.FirstBit = SPI_FIRSTBIT_MSB;
     RotaryEncoder_hspi.Init.TIMode = SPI_TIMODE_DISABLE;
     RotaryEncoder_hspi.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;

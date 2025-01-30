@@ -122,7 +122,7 @@ typedef struct
 } AS5047PSETTINGS2;
 
 
-AS5047PStatus AS5047P_SetInterface( AS5047PInterface inter );
+AS5047PStatus AS5047P_SetInterface( AS5047PInterface* inter );
 
 void AS5047P_Write( uint32_t data, uint16_t address );
 

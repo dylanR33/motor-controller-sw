@@ -123,7 +123,7 @@ typedef struct
     DRV8323CSACtrl      csaCtrl;
 } DRV8323Registers;
 
-DRV8323Status DRV8323_SetInterface( DRV8323Interface inter );
+DRV8323Status DRV8323_SetInterface( DRV8323Interface* inter );
 
 void DRV8323_Write( uint16_t data, uint8_t address );
 

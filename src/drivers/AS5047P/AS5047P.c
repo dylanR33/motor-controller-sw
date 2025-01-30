@@ -113,12 +113,12 @@ typedef enum
 } SETTINGS2_BitPos;
  
 
-AS5047PStatus AS5047P_SetInterface( AS5047PInterface inter )
+AS5047PStatus AS5047P_SetInterface( AS5047PInterface* inter )
 {
-    if ( inter.spiWrite && inter.spiRead )
+    if ( inter->spiWrite && inter->spiRead )
     {
-        interface.spiWrite = inter.spiWrite;
-        interface.spiRead  = inter.spiRead;
+        interface.spiWrite = inter->spiWrite;
+        interface.spiRead  = inter->spiRead;
 
         return AS5047P_INTERFACE_SET;
     }

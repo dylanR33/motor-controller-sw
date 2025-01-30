@@ -65,7 +65,7 @@ void main()
         .spiWrite = RotaryEncoderSpi_Write,
         .spiRead  = RotaryEncoderSpi_Read
     };
-    AS5047P_SetInterface( encoder );
+    AS5047P_SetInterface( &encoder );
 
     AS5047PZPOSL cfg =
     {
@@ -79,7 +79,7 @@ void main()
         .spiWrite = GateDriverSpi_Write,
         .spiRead  = GateDriverSpi_Read
     };
-    DRV8323_SetInterface( gateDriver );
+    DRV8323_SetInterface( &gateDriver );
 
     DRV8323GateDriveHS hs = 
     {

@@ -118,9 +118,9 @@ static int isAddressOutOfRange( uint8_t address )
 }
 
 
-static int isInterfaceValid( DRV8323Interface inter )
+static int isInterfaceValid( DRV8323Interface* inter )
 {
-    return ( inter.spiRead && inter.spiWrite );
+    return ( inter->spiRead && inter->spiWrite );
 }
 
 
@@ -154,11 +154,11 @@ static void setReadWriteBit( uint16_t* data )
 }
 
 
-DRV8323Status DRV8323_SetInterface( DRV8323Interface inter )
+DRV8323Status DRV8323_SetInterface( DRV8323Interface* inter )
 {
     if ( isInterfaceValid( inter ) )
     {
-        interface = inter;
+        interface = *inter;
         return DRV8323_INTERFACE_SET;
     }
 

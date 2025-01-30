@@ -17,6 +17,8 @@ TEST_SETUP( AS5047P )
         .spiWrite = WriteSpy_Write32,
         .spiRead  = FakeRead_Read32
     };
+
+    AS5047P_SetInterface( &interface );
     
     WriteSpy_Create();
     FakeRead_Create();
@@ -34,11 +36,11 @@ TEST( AS5047P, SetInterface_RequireBothInterfaces )
         .spiRead = NULL
     };
 
-    TEST_ASSERT_EQUAL( AS5047P_INTERFACE_UNSET, AS5047P_SetInterface( interface ) );
+    TEST_ASSERT_EQUAL( AS5047P_INTERFACE_UNSET, AS5047P_SetInterface( &interface ) );
 
     interface.spiRead = FakeRead_Read32;
 
-    TEST_ASSERT_EQUAL( AS5047P_INTERFACE_SET, AS5047P_SetInterface( interface ) );
+    TEST_ASSERT_EQUAL( AS5047P_INTERFACE_SET, AS5047P_SetInterface( &interface ) );
 }
 
 TEST( AS5047P, WriteBit30Low )

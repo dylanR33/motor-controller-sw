@@ -20,7 +20,7 @@ TEST_SETUP( DRV8323 )
         .spiWrite = WriteSpy_Write16,
         .spiRead = FakeRead_Read16
     };
-    DRV8323_SetInterface( interface );
+    DRV8323_SetInterface( &interface );
 
     WriteSpy_Create();
     FakeRead_Create();
@@ -39,11 +39,11 @@ TEST( DRV8323,  SetInterface_RequireBothInterfaces)
         .spiRead = NULL
     };
 
-    TEST_ASSERT_EQUAL( DRV8323_INTERFACE_UNSET, DRV8323_SetInterface( interface ) );
+    TEST_ASSERT_EQUAL( DRV8323_INTERFACE_UNSET, DRV8323_SetInterface( &interface ) );
     
     interface.spiRead = FakeRead_Read16;
 
-    TEST_ASSERT_EQUAL( DRV8323_INTERFACE_SET, DRV8323_SetInterface( interface ) );
+    TEST_ASSERT_EQUAL( DRV8323_INTERFACE_SET, DRV8323_SetInterface( &interface ) );
 }
 
 TEST( DRV8323, WriteMSBLow )

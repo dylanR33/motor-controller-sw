@@ -7,7 +7,7 @@
 
 #include "RotaryEncoderSpi.h"
 #include "GateDriverSpi.h"
-#include "UVWtim.h"
+#include "SvmPwm.h"
 
 #include "AS5047P.h"
 #include "DRV8323.h"
@@ -58,7 +58,7 @@ void main()
     
     RotaryEncoderSpi_Config();
     GateDriverSpi_Config();
-    TimerConfig();
+    SvmPwm_Config();
 
     AS5047PInterface encoder =
     {
@@ -96,13 +96,13 @@ void main()
         AS5047P_SetZPOSL( &cfg );
         DRV8323_SetGateDriveHS( &hs );
 
-        PwmAdjustPhaseA( 0x07FF );
+        SvmPwm_SetPulseA( 0x07FF );
         HAL_Delay( 150 );
 
-        PwmAdjustPhaseA( 0x05FF );
+        SvmPwm_SetPulseA( 0x05FF );
         HAL_Delay( 150 );
 
-        PwmAdjustPhaseA( 0x04FF );
+        SvmPwm_SetPulseA( 0x04FF );
         HAL_Delay( 150 );
    }
 }

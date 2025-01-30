@@ -1,4 +1,4 @@
-#include "UVWtim.h"
+#include "SvmPwm.h"
 
 #include "stm32f4xx.h"
 #include "stm32f4xx_hal.h"
@@ -15,7 +15,7 @@ static TIM_HandleTypeDef timer = { 0 };
 
 static TIM_OC_InitTypeDef OCcfg = { 0 };
 
-void TimerConfig()
+void SvmPwm_Config()
 {
     TIM_ClockConfigTypeDef clkCfg = { 0 };
     TIM_MasterConfigTypeDef masterCfg = { 0 };
@@ -81,19 +81,19 @@ void TimerConfig()
     HAL_TIM_PWM_Start( &timer, TIM_CHANNEL_3 );
 }
 
-void PwmAdjustPhaseA( uint16_t pulse )
+void SvmPwm_SetPulseA( uint16_t pulse )
 {
     OCcfg.Pulse = pulse;
     HAL_TIM_PWM_ConfigChannel( &timer, &OCcfg, TIM_CHANNEL_1 );
 }
 
-void PwmAdjustPhaseB( uint16_t pulse )
+void SvmPwm_SetPulseB( uint16_t pulse )
 {
     OCcfg.Pulse = pulse;
     HAL_TIM_PWM_ConfigChannel( &timer, &OCcfg, TIM_CHANNEL_2 );
 }
 
-void PwmAdjustPhaseC( uint16_t pulse )
+void SvmPwm_SetPulseC( uint16_t pulse )
 {
     OCcfg.Pulse = pulse;
     HAL_TIM_PWM_ConfigChannel( &timer, &OCcfg, TIM_CHANNEL_3 );

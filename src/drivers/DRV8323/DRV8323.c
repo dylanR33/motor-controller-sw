@@ -120,7 +120,8 @@ static int isAddressOutOfRange( uint8_t address )
 
 static int isInterfaceValid( DRV8323Interface* inter )
 {
-    return ( inter->spiRead && inter->spiWrite );
+    return ( inter->spiRead && inter->spiWrite && inter->adcReadPhaseA &&
+             inter->adcReadPhaseB && inter->adcReadPhaseC );
 }
 
 
@@ -427,3 +428,18 @@ void DRV8323_GetCSACtrl( DRV8323CSACtrl* csaCtrl )
     csaCtrl->sen_lvl   = extractBits( reading, TWO_BIT_MASK   , SEN_LVL_Pos   );
 }
 
+
+uint32_t DRV8323_GetRawPhaseCurrentA()
+{
+    return interface.adcReadPhaseA();
+}
+
+uint32_t DRV8323_GetRawPhaseCurrentB()
+{
+    return interface.adcReadPhaseB();
+}
+
+uint32_t DRV8323_GetRawPhaseCurrentC()
+{
+    return interface.adcReadPhaseC();
+}

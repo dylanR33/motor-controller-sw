@@ -18,7 +18,10 @@ TEST_SETUP( DRV8323 )
     DRV8323Interface interface = 
     {
         .spiWrite = WriteSpy_Write16,
-        .spiRead = FakeRead_Read16
+        .spiRead = FakeRead_Read16,
+        .adcReadPhaseA = FakeRead_Read32VoidParameter,
+        .adcReadPhaseB = FakeRead_Read32VoidParameter,
+        .adcReadPhaseC = FakeRead_Read32VoidParameter
     };
     DRV8323_SetInterface( &interface );
 
@@ -42,6 +45,12 @@ TEST( DRV8323,  SetInterface_RequireBothInterfaces)
     TEST_ASSERT_EQUAL( DRV8323_INTERFACE_UNSET, DRV8323_SetInterface( &interface ) );
     
     interface.spiRead = FakeRead_Read16;
+
+    TEST_ASSERT_EQUAL( DRV8323_INTERFACE_UNSET, DRV8323_SetInterface( &interface ) );
+
+    interface.adcReadPhaseA = FakeRead_Read32VoidParameter;
+    interface.adcReadPhaseB = FakeRead_Read32VoidParameter;
+    interface.adcReadPhaseC = FakeRead_Read32VoidParameter;
 
     TEST_ASSERT_EQUAL( DRV8323_INTERFACE_SET, DRV8323_SetInterface( &interface ) );
 }

@@ -30,6 +30,9 @@ typedef struct
 {
     void     ( *spiWrite ) ( uint16_t cmdOut );
     uint16_t ( *spiRead  ) ( uint16_t cmdOut );
+    uint32_t ( *adcReadPhaseA ) ( void );
+    uint32_t ( *adcReadPhaseB ) ( void );
+    uint32_t ( *adcReadPhaseC ) ( void );
 } DRV8323Interface;
 
 typedef struct
@@ -152,5 +155,11 @@ void DRV8323_GetGateDriveLS( DRV8323GateDriveLS* gateDriveLS );
 void DRV8323_GetOCPCtrl( DRV8323OCPCtrl* ocpCtrl );
 
 void DRV8323_GetCSACtrl( DRV8323CSACtrl* csaCtrl );
+
+uint32_t DRV8323_GetRawPhaseCurrentA();
+
+uint32_t DRV8323_GetRawPhaseCurrentB();
+
+uint32_t DRV8323_GetRawPhaseCurrentC();
 
 #endif

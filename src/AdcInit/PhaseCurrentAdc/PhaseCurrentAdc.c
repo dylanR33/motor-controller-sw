@@ -1,3 +1,5 @@
+#include "PhaseCurrentAdc.h"
+
 #include <stdint.h>
 
 #include "stm32f4xx_hal.h"
@@ -9,7 +11,7 @@ static ADC_HandleTypeDef phaseA_hadc;
 static ADC_HandleTypeDef phaseB_hadc;
 static ADC_HandleTypeDef phaseC_hadc;
 
-void ADC_Config()
+void PhaseCurrentAdc_Config()
 {
     // ------------- Phase A ADC (master) config ----------------------
     phaseA_hadc.Instance = ADC1;

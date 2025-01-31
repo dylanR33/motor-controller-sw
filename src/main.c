@@ -8,6 +8,7 @@
 #include "RotaryEncoderSpi.h"
 #include "GateDriverSpi.h"
 #include "SvmPwm.h"
+#include "PhaseCurrentAdc.h"
 
 #include "AS5047P.h"
 #include "DRV8323.h"
@@ -59,6 +60,7 @@ void main()
     RotaryEncoderSpi_Config();
     GateDriverSpi_Config();
     SvmPwm_Config();
+    PhaseCurrentAdc_Config();
 
     AS5047PInterface encoder =
     {

@@ -185,6 +185,18 @@ TEST( DRV8323, SetCSACtrlMemberBitsPlacedCorrectly )
     TEST_ASSERT_BITS( 0x07FF, 0x5A6, WriteSpy_GetLastWrite16() );
 }
 
+TEST( DRV8323, SetGateDriveHSFullFrameCheck )
+{
+    DRV8323GateDriveHS config = 
+    {
+        .lock = 3,
+        .idrivep_hs = 9,
+        .idriven_hs = 10
+    };
+    DRV8323_SetGateDriveHS( &config );
+    TEST_ASSERT_EQUAL_HEX32( 0x1B9A, WriteSpy_GetLastWrite16() );
+}
+
 TEST( DRV8323, SetDriverCtrlFailIfMembersBitsExceedExpected )
 {
     DRV8323DriverCtrl config =

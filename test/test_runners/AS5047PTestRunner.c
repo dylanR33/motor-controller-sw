@@ -35,4 +35,5 @@ TEST_GROUP_RUNNER( AS5047P )
     RUN_TEST_CASE( AS5047P, GetZPOSLMemberBitsExtractedCorrectly );
     RUN_TEST_CASE( AS5047P, GetSETTINGS1MemberBitsExtractedCorrectly );
     RUN_TEST_CASE( AS5047P, GetSETTINGS2MemberBitsExtractedCorrectly );
+    RUN_TEST_CASE( AS5047P, SetZPOSLFullFrameCheck );
 }

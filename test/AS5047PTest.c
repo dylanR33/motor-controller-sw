@@ -215,6 +215,19 @@ TEST( AS5047P, SetPROGFailIfMembersBitsExceedExpected )
 //{
 //}
 
+TEST( AS5047P, SetZPOSLFullFrameCheck )
+{
+    AS5047PZPOSL cfg =
+    {
+        .zposLSB         = 17,
+        .comp_l_error_en = 1,
+        .comp_h_error_en = 0
+    };
+    AS5047P_SetZPOSL( &cfg );
+    TEST_ASSERT_EQUAL_HEX32( 0x00170051, WriteSpy_GetLastWrite32() );
+}
+
+
 TEST( AS5047P, SetZPOSLFailIfMembersBitsExceedExpected )
 {
     AS5047PZPOSL cfg =
@@ -398,3 +411,4 @@ TEST( AS5047P, GetSETTINGS2MemberBitsExtractedCorrectly )
     TEST_ASSERT_EQUAL( 3, settings2.hys    );
     TEST_ASSERT_EQUAL( 2, settings2.abires );
 }
+

@@ -19,7 +19,7 @@ void HAL_ADC_MspInit( ADC_HandleTypeDef* hadc )
         __HAL_RCC_GPIOC_CLK_ENABLE();
 
         // Configure pins to analog mode
-        GPIO_InitTypeDef phaseA;
+        GPIO_InitTypeDef phaseA = { 0 };
 
         phaseA.Pin  = GPIO_PIN_0;
         phaseA.Mode = GPIO_MODE_ANALOG;
@@ -36,7 +36,7 @@ void HAL_ADC_MspInit( ADC_HandleTypeDef* hadc )
         __HAL_RCC_GPIOC_CLK_ENABLE();
 
         // Configure pins to analog mode
-        GPIO_InitTypeDef phaseB;
+        GPIO_InitTypeDef phaseB = { 0 };
 
         phaseB.Pin  = GPIO_PIN_1;
         phaseB.Mode = GPIO_MODE_ANALOG;
@@ -54,7 +54,7 @@ void HAL_ADC_MspInit( ADC_HandleTypeDef* hadc )
         __HAL_RCC_GPIOC_CLK_ENABLE();
 
         // Configure pins to analog mode
-        GPIO_InitTypeDef phaseC;
+        GPIO_InitTypeDef phaseC = { 0 };
 
         phaseC.Pin  = GPIO_PIN_2;
         phaseC.Mode = GPIO_MODE_ANALOG;

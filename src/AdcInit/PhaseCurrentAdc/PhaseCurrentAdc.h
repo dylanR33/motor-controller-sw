@@ -5,12 +5,10 @@
 
 void PhaseCurrentAdc_Config();
 
-void PhaseCurrentAdc_PollForConversion();
+uint32_t PhaseCurrentAdc_GetRawPhaseA();
 
-uint32_t PhaseCurrentAdc_GetPhaseA();
+uint32_t PhaseCurrentAdc_GetRawPhaseB();
 
-uint32_t PhaseCurrentAdc_GetPhaseB();
-
-uint32_t PhaseCurrentAdc_GetPhaseC();
+uint32_t PhaseCurrentAdc_GetRawPhaseC();
 
 #endif

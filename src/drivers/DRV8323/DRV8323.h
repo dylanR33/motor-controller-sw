@@ -30,9 +30,9 @@ typedef struct
 {
     void     ( *spiWrite ) ( uint16_t cmdOut );
     uint16_t ( *spiRead  ) ( uint16_t cmdOut );
-    uint32_t ( *adcReadPhaseA ) ( void );
-    uint32_t ( *adcReadPhaseB ) ( void );
-    uint32_t ( *adcReadPhaseC ) ( void );
+    uint32_t ( *adcReadRawPhaseA ) ( void );
+    uint32_t ( *adcReadRawPhaseB ) ( void );
+    uint32_t ( *adcReadRawPhaseC ) ( void );
 } DRV8323Interface;
 
 typedef struct
@@ -126,6 +126,14 @@ typedef struct
     DRV8323CSACtrl      csaCtrl;
 } DRV8323Registers;
 
+typedef struct
+{
+    float vRef;
+    uint32_t adcSteps;
+    float rSense;
+    uint16_t csaGain;
+} DRV8323CurrentSenseCfg;
+
 DRV8323Status DRV8323_SetInterface( DRV8323Interface* inter );
 
 void DRV8323_Write( uint16_t data, uint8_t address );
@@ -156,10 +164,10 @@ void DRV8323_GetOCPCtrl( DRV8323OCPCtrl* ocpCtrl );
 
 void DRV8323_GetCSACtrl( DRV8323CSACtrl* csaCtrl );
 
-uint32_t DRV8323_GetRawPhaseCurrentA();
+float DRV8323_GetPhaseCurrentA( DRV8323CurrentSenseCfg* iCfg );
 
-uint32_t DRV8323_GetRawPhaseCurrentB();
+float DRV8323_GetPhaseCurrentB( DRV8323CurrentSenseCfg* iCfg );
 
-uint32_t DRV8323_GetRawPhaseCurrentC();
+float DRV8323_GetPhaseCurrentC( DRV8323CurrentSenseCfg* iCfg );
 
 #endif

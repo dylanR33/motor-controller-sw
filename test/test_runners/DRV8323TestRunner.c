@@ -31,4 +31,5 @@ TEST_GROUP_RUNNER(DRV8323)
     RUN_TEST_CASE( DRV8323, GetOCPCtrlMemberBitsExtractedCorrectly );
     RUN_TEST_CASE( DRV8323, GetCSACtrlMemberBitsExtractedCorrectly );
     RUN_TEST_CASE( DRV8323, SetGateDriveHSFullFrameCheck );
+    RUN_TEST_CASE( DRV8323, GetPhaseCurrentEquationProducesExpectedValue );
 }

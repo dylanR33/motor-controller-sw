@@ -120,8 +120,8 @@ static int isAddressOutOfRange( uint8_t address )
 
 static int isInterfaceValid( DRV8323Interface* inter )
 {
-    return ( inter->spiRead && inter->spiWrite && inter->adcReadPhaseA &&
-             inter->adcReadPhaseB && inter->adcReadPhaseC );
+    return ( inter->spiRead && inter->spiWrite && inter->adcReadRawPhaseA &&
+             inter->adcReadRawPhaseB && inter->adcReadRawPhaseC );
 }
 
 
@@ -429,17 +429,32 @@ void DRV8323_GetCSACtrl( DRV8323CSACtrl* csaCtrl )
 }
 
 
-uint32_t DRV8323_GetRawPhaseCurrentA()
+static float convertAdcToVoltage( uint32_t rawAdc, DRV8323CurrentSenseCfg* iCfg )
 {
-    return interface.adcReadPhaseA();
+    return ( ( iCfg->vRef / iCfg->adcSteps ) * rawAdc );
 }
 
-uint32_t DRV8323_GetRawPhaseCurrentB()
+
+static float calculatePhaseCurrent( float vSox, DRV8323CurrentSenseCfg* iCfg )
 {
-    return interface.adcReadPhaseB();
+    return ( ( iCfg->vRef / 2 ) - vSox ) / ( iCfg->csaGain * iCfg->rSense );
 }
 
-uint32_t DRV8323_GetRawPhaseCurrentC()
+
+float DRV8323_GetPhaseCurrentA( DRV8323CurrentSenseCfg* iCfg )
 {
-    return interface.adcReadPhaseC();
+    return calculatePhaseCurrent( convertAdcToVoltage( interface.adcReadRawPhaseA(), iCfg ), iCfg );
 }
+
+
+float DRV8323_GetPhaseCurrentB( DRV8323CurrentSenseCfg* iCfg )
+{
+    return calculatePhaseCurrent( convertAdcToVoltage( interface.adcReadRawPhaseB(), iCfg ), iCfg );
+}
+
+
+float DRV8323_GetPhaseCurrentC( DRV8323CurrentSenseCfg* iCfg )
+{
+    return calculatePhaseCurrent( convertAdcToVoltage( interface.adcReadRawPhaseC(), iCfg ), iCfg );
+}
+

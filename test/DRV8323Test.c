@@ -19,9 +19,9 @@ TEST_SETUP( DRV8323 )
     {
         .spiWrite = WriteSpy_Write16,
         .spiRead = FakeRead_Read16,
-        .adcReadPhaseA = FakeRead_Read32VoidParameter,
-        .adcReadPhaseB = FakeRead_Read32VoidParameter,
-        .adcReadPhaseC = FakeRead_Read32VoidParameter
+        .adcReadRawPhaseA = FakeRead_Read32VoidParameter,
+        .adcReadRawPhaseB = FakeRead_Read32VoidParameter,
+        .adcReadRawPhaseC = FakeRead_Read32VoidParameter
     };
     DRV8323_SetInterface( &interface );
 
@@ -48,9 +48,9 @@ TEST( DRV8323,  SetInterface_RequireBothInterfaces)
 
     TEST_ASSERT_EQUAL( DRV8323_INTERFACE_UNSET, DRV8323_SetInterface( &interface ) );
 
-    interface.adcReadPhaseA = FakeRead_Read32VoidParameter;
-    interface.adcReadPhaseB = FakeRead_Read32VoidParameter;
-    interface.adcReadPhaseC = FakeRead_Read32VoidParameter;
+    interface.adcReadRawPhaseA = FakeRead_Read32VoidParameter;
+    interface.adcReadRawPhaseB = FakeRead_Read32VoidParameter;
+    interface.adcReadRawPhaseC = FakeRead_Read32VoidParameter;
 
     TEST_ASSERT_EQUAL( DRV8323_INTERFACE_SET, DRV8323_SetInterface( &interface ) );
 }
@@ -381,3 +381,20 @@ TEST( DRV8323, GetCSACtrlMemberBitsExtractedCorrectly )
     TEST_ASSERT_EQUAL( 1, csaCtrl.sen_lvl   );
 }
 
+TEST( DRV8323, GetPhaseCurrentEquationProducesExpectedValue )
+{
+
+    FakeRead_SetNextReading32VoidParameter( 2000 );
+    DRV8323CurrentSenseCfg iCfg =
+    {
+        .vRef = 3.3,
+        .adcSteps = 4096,
+        .rSense = 0.0015,
+        .csaGain = 10
+    };
+
+    TEST_ASSERT_FLOAT_WITHIN( 0.001, 2.578, DRV8323_GetPhaseCurrentA( &iCfg ) );
+    TEST_ASSERT_FLOAT_WITHIN( 0.001, 2.578, DRV8323_GetPhaseCurrentB( &iCfg ) );
+    TEST_ASSERT_FLOAT_WITHIN( 0.001, 2.578, DRV8323_GetPhaseCurrentC( &iCfg ) );
+
+}

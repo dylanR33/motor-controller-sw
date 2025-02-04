@@ -9,7 +9,7 @@ static void RunAllTests(void)
     RUN_TEST_GROUP( Transform          );
     RUN_TEST_GROUP( InterpolatedLookup );
     RUN_TEST_GROUP( Wave               );
-    //RUN_TEST_GROUP( PI                 );
+    RUN_TEST_GROUP( PI                 );
 }
 
 int main(int argc, const char* argv[])

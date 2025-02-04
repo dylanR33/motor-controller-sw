@@ -1,5 +1,6 @@
 sources = src/drivers/DRV8323 src/drivers/AS5047P \
 		  src/FOC/Transform src/FOC/Wave src/FOC/InterpolatedLookup \
+		  src/FOC/PIController
 
 hw_sources = src/SpiInit src/SpiInit/GateDriverSpi src/SpiInit/RotaryEncoderSpi \
 			 src/AdcInit src/AdcInit/PhaseCurrentAdc \

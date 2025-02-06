@@ -1,9 +1,12 @@
 #include <stdint.h>
+#include <stdio.h>
 
 #include "stm32f4xx.h"
 #include "stm32f4xx_hal.h"
 #include "stm32f4xx_hal_rcc.h"
 #include "stm32f4xx_hal_flash_ex.h"
+
+#include "usart_print.h"
 
 #include "RotaryEncoderSpi.h"
 #include "GateDriverSpi.h"
@@ -12,6 +15,90 @@
 
 #include "AS5047P.h"
 #include "DRV8323.h"
+
+static void SystemClock_Config(void);
+
+void main()
+{
+    HAL_Init();
+
+    SystemClock_Config();
+
+    // // Application code ...
+    
+    RotaryEncoderSpi_Config();
+    GateDriverSpi_Config();
+    SvmPwm_Config();
+    PhaseCurrentAdc_Config();
+
+    AS5047PInterface encoder =
+    {
+        .spiWrite = RotaryEncoderSpi_Write,
+        .spiRead  = RotaryEncoderSpi_Read
+    };
+    AS5047P_SetInterface( &encoder );
+
+    AS5047PZPOSL cfg =
+    {
+        .zposLSB = 17,
+        .comp_l_error_en = 1,
+        .comp_h_error_en = 0
+    };
+
+    DRV8323Interface gateDriver =
+    {
+        .spiWrite = GateDriverSpi_Write,
+        .spiRead  = GateDriverSpi_Read,
+        .adcReadRawPhaseA = PhaseCurrentAdc_GetRawPhaseA,
+        .adcReadRawPhaseB = PhaseCurrentAdc_GetRawPhaseB,
+        .adcReadRawPhaseC = PhaseCurrentAdc_GetRawPhaseC,
+    };
+    DRV8323_SetInterface( &gateDriver );
+
+    DRV8323GateDriveHS hs = 
+    {
+        .lock = 3,
+        .idrivep_hs = 9,
+        .idriven_hs = 10
+    };
+
+    UsartPrint_Init();
+
+    DRV8323CurrentSenseCfg iCfg =
+    {
+        .vRef = 3.3,
+        .adcSteps = 4096,
+        .rSense = 0.0015,
+        .csaGain = 10
+    };
+   
+    SvmPwm_SetPulseU( 0x09FF );
+
+    SvmPwm_SetPulseV( 0x05FF );
+
+    SvmPwm_SetPulseW( 0x01FF );
+
+
+    // Super loop
+    while (1)
+    {
+        //AS5047P_SetZPOSL( &cfg );
+        //DRV8323_SetGateDriveHS( &hs );
+
+        //SvmPwm_SetPulseU( 0x0AFF );
+        //HAL_Delay( 150 );
+
+        //SvmPwm_SetPulseV( 0x05FF );
+        //HAL_Delay( 150 );
+
+        //SvmPwm_SetPulseW( 0x01FF );
+        
+        printf("%f\n", DRV8323_GetPhaseCurrentA( &iCfg ));
+
+        HAL_Delay( 100 );
+   }
+}
+
 
 static void SystemClock_Config(void)
 {
@@ -49,65 +136,6 @@ static void SystemClock_Config(void)
   
 }
 
-void main()
-{
-    HAL_Init();
-
-    SystemClock_Config();
-
-    // // Application code ...
-    
-    RotaryEncoderSpi_Config();
-    GateDriverSpi_Config();
-    SvmPwm_Config();
-    PhaseCurrentAdc_Config();
-
-    AS5047PInterface encoder =
-    {
-        .spiWrite = RotaryEncoderSpi_Write,
-        .spiRead  = RotaryEncoderSpi_Read
-    };
-    AS5047P_SetInterface( &encoder );
-
-    AS5047PZPOSL cfg =
-    {
-        .zposLSB = 17,
-        .comp_l_error_en = 1,
-        .comp_h_error_en = 0
-    };
-
-    DRV8323Interface gateDriver =
-    {
-        .spiWrite = GateDriverSpi_Write,
-        .spiRead  = GateDriverSpi_Read
-    };
-    DRV8323_SetInterface( &gateDriver );
-
-    DRV8323GateDriveHS hs = 
-    {
-        .lock = 3,
-        .idrivep_hs = 9,
-        .idriven_hs = 10
-    };
-   
-    HAL_Delay(1);
-
-    // Super loop
-    while (1)
-    {
-        AS5047P_SetZPOSL( &cfg );
-        DRV8323_SetGateDriveHS( &hs );
-
-        SvmPwm_SetPulseA( 0x07FF );
-        HAL_Delay( 150 );
-
-        SvmPwm_SetPulseA( 0x05FF );
-        HAL_Delay( 150 );
-
-        SvmPwm_SetPulseA( 0x04FF );
-        HAL_Delay( 150 );
-   }
-}
 
 void Systick_Handler()
 {

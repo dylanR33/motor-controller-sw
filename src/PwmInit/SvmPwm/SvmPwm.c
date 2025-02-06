@@ -81,19 +81,19 @@ void SvmPwm_Config()
     HAL_TIM_PWM_Start( &timer, TIM_CHANNEL_3 );
 }
 
-void SvmPwm_SetPulseA( uint16_t pulse )
+void SvmPwm_SetPulseU( uint16_t pulse )
 {
     OCcfg.Pulse = pulse;
     HAL_TIM_PWM_ConfigChannel( &timer, &OCcfg, TIM_CHANNEL_1 );
 }
 
-void SvmPwm_SetPulseB( uint16_t pulse )
+void SvmPwm_SetPulseV( uint16_t pulse )
 {
     OCcfg.Pulse = pulse;
     HAL_TIM_PWM_ConfigChannel( &timer, &OCcfg, TIM_CHANNEL_2 );
 }
 
-void SvmPwm_SetPulseC( uint16_t pulse )
+void SvmPwm_SetPulseW( uint16_t pulse )
 {
     OCcfg.Pulse = pulse;
     HAL_TIM_PWM_ConfigChannel( &timer, &OCcfg, TIM_CHANNEL_3 );

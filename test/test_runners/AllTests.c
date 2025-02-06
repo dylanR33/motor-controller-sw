@@ -10,6 +10,7 @@ static void RunAllTests(void)
     RUN_TEST_GROUP( InterpolatedLookup );
     RUN_TEST_GROUP( Wave               );
     RUN_TEST_GROUP( PI                 );
+    RUN_TEST_GROUP( SVM                );
 }
 
 int main(int argc, const char* argv[])

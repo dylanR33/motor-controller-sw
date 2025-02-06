@@ -11,7 +11,7 @@ typedef struct
     float integral;         // Integral carry
     float T;                // Sampling period
     float awGain;           // Antiwindup gain
-    float min               // Process variable min
+    float min;              // Process variable min
     float max;              // Process variable max
     float prevCmdUnsat;     // previous unsaturated command  (used for antiwindup)
     float prevCmdSat;       // previous saturated command    (used for antiwindup)

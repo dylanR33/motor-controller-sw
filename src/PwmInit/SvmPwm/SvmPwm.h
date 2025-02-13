@@ -5,11 +5,11 @@
 
 void SvmPwm_Config();
 
-void SvmPwm_SetPulseU( uint16_t pulse );
+void SvmPwm_SetPulseU( float pulse );
 
-void SvmPwm_SetPulseV( uint16_t pulse );
+void SvmPwm_SetPulseV( float pulse );
 
-void SvmPwm_SetPulseW( uint16_t pulse );
+void SvmPwm_SetPulseW( float pulse );
 
 #endif
 

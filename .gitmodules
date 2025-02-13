@@ -4,3 +4,6 @@
 [submodule "tools/command-line-stm32f4"]
 	path = tools/command-line-stm32f4
 	url = https://github.com/dylanR33/command-line-stm32f4.git
+[submodule "test/test-utils"]
+	path = test/test-utils
+	url = https://github.com/dylanR33/test-utils.git

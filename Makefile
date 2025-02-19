@@ -6,7 +6,7 @@ sources = src/drivers/DRV8323 src/drivers/AS5047P \
 hw_sources = src/SpiInit src/SpiInit/GateDriverSpi src/SpiInit/RotaryEncoderSpi \
 			 src/AdcInit src/AdcInit/PhaseCurrentAdc \
 			 src/PwmInit src/PwmInit/SvmPwm \
-			 src/GpioInit/GateDriverGpio
+			 src/GpioInit/GateDriverGpio src/ClockInit
 
 build = build
 

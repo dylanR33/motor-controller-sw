@@ -3,7 +3,7 @@
 
 TEST_GROUP_RUNNER(DRV8323)
 {
-    RUN_TEST_CASE(DRV8323, SetInterface_RequireBothInterfaces);
+    RUN_TEST_CASE( DRV8323, SetInterface_RequireAllInterfaces);
     RUN_TEST_CASE( DRV8323, WriteMSBLow );
     RUN_TEST_CASE( DRV8323, ReadMSBHigh );
     RUN_TEST_CASE( DRV8323, PreventWriteToOutOfBoundsAddresses );
@@ -32,4 +32,5 @@ TEST_GROUP_RUNNER(DRV8323)
     RUN_TEST_CASE( DRV8323, GetCSACtrlMemberBitsExtractedCorrectly );
     RUN_TEST_CASE( DRV8323, SetGateDriveHSFullFrameCheck );
     RUN_TEST_CASE( DRV8323, GetPhaseCurrentEquationProducesExpectedValue );
+    RUN_TEST_CASE( DRV8323, SetEnableStateSampleInput );
 }

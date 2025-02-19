@@ -121,7 +121,8 @@ static int isAddressOutOfRange( uint8_t address )
 static int isInterfaceValid( DRV8323Interface* inter )
 {
     return ( inter->spiRead && inter->spiWrite && inter->adcReadRawPhaseA &&
-             inter->adcReadRawPhaseB && inter->adcReadRawPhaseC );
+             inter->adcReadRawPhaseB && inter->adcReadRawPhaseC &&
+             inter->setEnablePin );
 }
 
 
@@ -458,3 +459,10 @@ float DRV8323_GetPhaseCurrentC( DRV8323CurrentSenseCfg* iCfg )
     return calculatePhaseCurrent( convertAdcToVoltage( interface.adcReadRawPhaseC(), iCfg ), iCfg );
 }
 
+void DRV8323_SetEnableState( DRV8323_EnableState state )
+{
+    if ( state == ENABLE_ON )
+        interface.setEnablePin( 1 );
+    else
+        interface.setEnablePin( 0 );
+}

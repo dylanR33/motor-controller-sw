@@ -26,13 +26,20 @@ typedef enum
     CSA_CTRL
 } DRV8323_Register;
 
+typedef enum
+{
+    ENABLE_OFF,
+    ENABLE_ON
+} DRV8323_EnableState;
+
 typedef struct
 {
-    void     ( *spiWrite ) ( uint16_t cmdOut );
-    uint16_t ( *spiRead  ) ( uint16_t cmdOut );
-    uint32_t ( *adcReadRawPhaseA ) ( void );
-    uint32_t ( *adcReadRawPhaseB ) ( void );
-    uint32_t ( *adcReadRawPhaseC ) ( void );
+    void     ( *spiWrite         ) ( uint16_t cmdOut );
+    uint16_t ( *spiRead          ) ( uint16_t cmdOut );
+    uint32_t ( *adcReadRawPhaseA ) ( void            );
+    uint32_t ( *adcReadRawPhaseB ) ( void            );
+    uint32_t ( *adcReadRawPhaseC ) ( void            );
+    void     ( *setEnablePin     ) ( uint8_t state   );
 } DRV8323Interface;
 
 typedef struct
@@ -169,5 +176,7 @@ float DRV8323_GetPhaseCurrentA( DRV8323CurrentSenseCfg* iCfg );
 float DRV8323_GetPhaseCurrentB( DRV8323CurrentSenseCfg* iCfg );
 
 float DRV8323_GetPhaseCurrentC( DRV8323CurrentSenseCfg* iCfg );
+
+void DRV8323_SetEnableState( DRV8323_EnableState state );
 
 #endif

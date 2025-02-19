@@ -21,7 +21,8 @@ TEST_SETUP( DRV8323 )
         .spiRead = FakeRead_Read16,
         .adcReadRawPhaseA = FakeRead_Read32VoidParameter,
         .adcReadRawPhaseB = FakeRead_Read32VoidParameter,
-        .adcReadRawPhaseC = FakeRead_Read32VoidParameter
+        .adcReadRawPhaseC = FakeRead_Read32VoidParameter,
+        .setEnablePin = WriteSpy_Write8
     };
     DRV8323_SetInterface( &interface );
 
@@ -34,24 +35,24 @@ TEST_TEAR_DOWN( DRV8323 )
 }
 
 
-TEST( DRV8323,  SetInterface_RequireBothInterfaces)
+TEST( DRV8323, SetInterface_RequireAllInterfaces )
 {
     DRV8323Interface interface = 
     {
         .spiWrite = WriteSpy_Write16,
         .spiRead = NULL
     };
-
     TEST_ASSERT_EQUAL( DRV8323_INTERFACE_UNSET, DRV8323_SetInterface( &interface ) );
     
     interface.spiRead = FakeRead_Read16;
-
     TEST_ASSERT_EQUAL( DRV8323_INTERFACE_UNSET, DRV8323_SetInterface( &interface ) );
 
     interface.adcReadRawPhaseA = FakeRead_Read32VoidParameter;
     interface.adcReadRawPhaseB = FakeRead_Read32VoidParameter;
     interface.adcReadRawPhaseC = FakeRead_Read32VoidParameter;
+    TEST_ASSERT_EQUAL( DRV8323_INTERFACE_UNSET, DRV8323_SetInterface( &interface ) );
 
+    interface.setEnablePin = WriteSpy_Write8;
     TEST_ASSERT_EQUAL( DRV8323_INTERFACE_SET, DRV8323_SetInterface( &interface ) );
 }
 
@@ -397,4 +398,13 @@ TEST( DRV8323, GetPhaseCurrentEquationProducesExpectedValue )
     TEST_ASSERT_FLOAT_WITHIN( 0.001, 2.578, DRV8323_GetPhaseCurrentB( &iCfg ) );
     TEST_ASSERT_FLOAT_WITHIN( 0.001, 2.578, DRV8323_GetPhaseCurrentC( &iCfg ) );
 
+}
+
+TEST( DRV8323, SetEnableStateSampleInput )
+{
+    DRV8323_SetEnableState( ENABLE_ON );
+    TEST_ASSERT_EQUAL( 1, WriteSpy_GetLastWrite8() );
+
+    DRV8323_SetEnableState( ENABLE_OFF );
+    TEST_ASSERT_EQUAL( 0, WriteSpy_GetLastWrite8() );
 }

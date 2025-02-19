@@ -10,6 +10,7 @@
 
 #include "RotaryEncoderSpi.h"
 #include "GateDriverSpi.h"
+#include "GateDriverGpio.h"
 #include "SvmPwm.h"
 #include "PhaseCurrentAdc.h"
 
@@ -33,6 +34,7 @@ void main()
     
     RotaryEncoderSpi_Config();
     GateDriverSpi_Config();
+    GateDriverGpio_Config();
     SvmPwm_Config();
     PhaseCurrentAdc_Config();
 
@@ -57,8 +59,13 @@ void main()
         .adcReadRawPhaseA = PhaseCurrentAdc_GetRawPhaseA,
         .adcReadRawPhaseB = PhaseCurrentAdc_GetRawPhaseB,
         .adcReadRawPhaseC = PhaseCurrentAdc_GetRawPhaseC,
+        .setEnablePin     = GateDriverGpio_SetEnablePin
     };
     DRV8323_SetInterface( &gateDriver );
+
+    UsartPrint_Init();
+
+    DRV8323_SetEnableState( ENABLE_ON );
 
     DRV8323GateDriveHS hs = 
     {
@@ -67,8 +74,6 @@ void main()
         .idriven_hs = 10
     };
 
-    UsartPrint_Init();
-
     DRV8323CurrentSenseCfg iCfg =
     {
         .vRef = 3.3,
@@ -76,17 +81,6 @@ void main()
         .rSense = 0.0015,
         .csaGain = 10
     };
-
-
-    GPIO_InitTypeDef gateEnable =
-    {
-        .Pin = GPIO_PIN_11,
-        .Mode = GPIO_MODE_OUTPUT_PP,
-    };
-
-    HAL_GPIO_Init( GPIOA, &gateEnable );
-
-    HAL_GPIO_WritePin( GPIOA, GPIO_PIN_11, GPIO_PIN_SET );
    
     //SvmPwm_SetPulseU( 0x09FF );
 

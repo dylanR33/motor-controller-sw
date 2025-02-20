@@ -71,26 +71,3 @@ void main()
     }
 }
 
-uint8_t FloatToPWMValue(float value) {
-    if (value < 0.0f) {
-        return 0;  // Ensure the value isn't below 0
-    } else if (value > 1.0f) {
-        return 4096;  // Ensure the value isn't above 1
-    } else {
-        return (uint16_t)(value * 4096.0f);  // Scale the value to an 8-bit range
-    }
-}
-
-#define STEP 0.0052
-uint8_t scalePulseWidth( float width )
-{
-    //width = ( width > (4/3))? (4/3) : width;
-    //width = ( width < 0 )? 0 : width;
-
-    uint8_t scaled = width / STEP;
-
-    printf( "0x%X\n", scaled);
-
-    return ( width / STEP );
-}
-

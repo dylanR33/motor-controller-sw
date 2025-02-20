@@ -81,21 +81,15 @@ void SvmPwm_Config()
 
 void SvmPwm_SetPulseU( float pulse )
 {
-    //OCcfg.Pulse = pulse;
-    //HAL_TIM_PWM_ConfigChannel( &timer, &OCcfg, TIM_CHANNEL_1 );
     __HAL_TIM_SET_COMPARE( &timer, TIM_CHANNEL_1, timer.Instance->ARR * pulse );
 }
 
 void SvmPwm_SetPulseV( float pulse )
 {
-    //OCcfg.Pulse = pulse;
-    //HAL_TIM_PWM_ConfigChannel( &timer, &OCcfg, TIM_CHANNEL_2 );
     __HAL_TIM_SET_COMPARE( &timer, TIM_CHANNEL_2, timer.Instance->ARR * pulse );
 }
 
 void SvmPwm_SetPulseW( float pulse )
 {
-    //OCcfg.Pulse = pulse;
-    //HAL_TIM_PWM_ConfigChannel( &timer, &OCcfg, TIM_CHANNEL_3 );
     __HAL_TIM_SET_COMPARE( &timer, TIM_CHANNEL_3, timer.Instance->ARR * pulse );
 }

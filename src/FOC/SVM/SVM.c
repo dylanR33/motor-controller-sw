@@ -32,6 +32,12 @@ Sextant SVM_CalculateSextant( IJK* ijk )
 }
 
 
+static uint32_t AreOnTimesNegative( OnTimeT* T )
+{
+    return ( T->Tx < 0 || T->Ty < 0 || T->T0 < 0 );
+}
+
+
 void SVM_DetermineOnTimeT( OnTimeT* T, IJK* ijk, Sextant nSextant )
 {
     switch ( nSextant )
@@ -64,6 +70,13 @@ void SVM_DetermineOnTimeT( OnTimeT* T, IJK* ijk, Sextant nSextant )
             return;
     }
     T->T0 = 1 - ( T->Tx + T->Ty );
+
+    if ( AreOnTimesNegative( T ) )
+    {
+        T->Tx = 0;
+        T->Ty = 0;
+        T->T0 = 0;
+    }
 }
 
 

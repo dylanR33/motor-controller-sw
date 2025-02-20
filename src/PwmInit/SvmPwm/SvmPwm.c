@@ -22,12 +22,10 @@ void SvmPwm_Config()
     TIM_BreakDeadTimeConfigTypeDef breakDeadTimeCfg = { 0 };
 
     timer.Instance = TIM1;
-    timer.Init.Prescaler = 0;
+    timer.Init.Prescaler = TIM_ETRPRESCALER_DIV1;
     timer.Init.CounterMode = TIM_COUNTERMODE_CENTERALIGNED1;
     timer.Init.Period = 0x0FCA;
-
     timer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-
     timer.Init.RepetitionCounter = 1;
     timer.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
     HAL_TIM_Base_Init( &timer );
@@ -43,7 +41,7 @@ void SvmPwm_Config()
 
     OCcfg.OCMode = TIM_OCMODE_PWM1;
     OCcfg.Pulse = 0x07FF; // 50% +Duty
-    OCcfg.OCPolarity = TIM_OCPOLARITY_LOW;
+    OCcfg.OCPolarity = TIM_OCPOLARITY_HIGH;
     OCcfg.OCNPolarity = TIM_OCNPOLARITY_HIGH;
     OCcfg.OCFastMode = TIM_OCFAST_ENABLE;
     OCcfg.OCIdleState = TIM_OCIDLESTATE_RESET;

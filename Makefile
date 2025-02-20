@@ -21,7 +21,7 @@ CLISTM_HAL_MODULES = gpio spi dma adc adc_ex tim tim_ex
 
 .PHONY: clean
 clean:
-	rm -r build
+	-rm -r build
 
 
 include tools/unity-test-fixture-setup/unity_test_fixture_setup.mk

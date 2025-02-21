@@ -40,7 +40,7 @@ void SvmPwm_Config()
     HAL_TIMEx_MasterConfigSynchronization( &timer, &masterCfg );
 
     OCcfg.OCMode = TIM_OCMODE_PWM1;
-    OCcfg.Pulse = 0x07FF; // 50% +Duty
+    OCcfg.Pulse = 0;
     OCcfg.OCPolarity = TIM_OCPOLARITY_HIGH;
     OCcfg.OCNPolarity = TIM_OCNPOLARITY_HIGH;
     OCcfg.OCFastMode = TIM_OCFAST_ENABLE;

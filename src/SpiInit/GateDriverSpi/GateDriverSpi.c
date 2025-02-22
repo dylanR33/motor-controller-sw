@@ -56,7 +56,7 @@ void GateDriverSpi_Config()
     GateDriver_hspi.Init.Direction          = SPI_DIRECTION_2LINES;
     GateDriver_hspi.Init.DataSize           = SPI_DATASIZE_8BIT;
     GateDriver_hspi.Init.CLKPolarity        = SPI_POLARITY_LOW;
-    GateDriver_hspi.Init.CLKPhase           = SPI_PHASE_1EDGE;
+    GateDriver_hspi.Init.CLKPhase           = SPI_PHASE_2EDGE;
     GateDriver_hspi.Init.NSS                = SPI_NSS_SOFT;
     GateDriver_hspi.Init.BaudRatePrescaler  = SPI_BAUDRATEPRESCALER_16;
     GateDriver_hspi.Init.FirstBit           = SPI_FIRSTBIT_MSB;

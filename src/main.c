@@ -23,8 +23,6 @@
 #include "SVM.h"
 
 
-uint8_t scalePulseWidth( float width );
-uint8_t FloatToPWMValue(float value);
 void main()
 {
     HAL_Init();

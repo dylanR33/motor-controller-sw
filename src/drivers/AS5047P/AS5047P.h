@@ -39,6 +39,7 @@ typedef struct
 {
     void     ( *spiWrite )( uint32_t cmdOut );
     uint32_t ( *spiRead  )( uint32_t cmdOut );
+    void     ( *spiSetCS )( uint8_t  state  );
 } AS5047PInterface;
 
 

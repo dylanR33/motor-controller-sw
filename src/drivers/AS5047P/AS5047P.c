@@ -115,11 +115,9 @@ typedef enum
 
 AS5047PStatus AS5047P_SetInterface( AS5047PInterface* inter )
 {
-    if ( inter->spiWrite && inter->spiRead )
+    if ( inter->spiWrite && inter->spiRead && inter->spiSetCS )
     {
-        interface.spiWrite = inter->spiWrite;
-        interface.spiRead  = inter->spiRead;
-
+        interface = *inter;
         return AS5047P_INTERFACE_SET;
     }
 

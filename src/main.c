@@ -38,7 +38,8 @@ void main()
     AS5047PInterface encoder =
     {
         .spiWrite = RotaryEncoderSpi_Write,
-        .spiRead  = RotaryEncoderSpi_Read
+        .spiRead  = RotaryEncoderSpi_Read,
+        .spiSetCS = RotaryEncoderSpi_SetCS
     };
     AS5047P_SetInterface( &encoder );
 

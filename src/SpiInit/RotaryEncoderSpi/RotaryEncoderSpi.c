@@ -119,3 +119,12 @@ uint32_t RotaryEncoderSpi_Read( uint32_t cmdOut )
     HAL_GPIO_WritePin( GPIOA, GPIO_PIN_15, GPIO_PIN_SET );
     return extractDataFromBuffer( dataIn );
 }
+
+void RotaryEncoderSpi_SetCS( uint8_t state )
+{
+    if ( state )
+        HAL_GPIO_WritePin( GPIOA, GPIO_PIN_15, GPIO_PIN_SET );
+    else
+        HAL_GPIO_WritePin( GPIOA, GPIO_PIN_15, GPIO_PIN_RESET );
+}
+

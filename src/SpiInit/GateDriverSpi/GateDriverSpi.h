@@ -9,5 +9,7 @@ void GateDriverSpi_Write( uint16_t cmdOut );
 
 uint16_t GateDriverSpi_Read( uint16_t cmdOut );
 
+void GateDriverSpi_SetCS( uint8_t state );
+
 #endif
 

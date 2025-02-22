@@ -115,3 +115,13 @@ uint16_t GateDriverSpi_Read( uint16_t cmdOut )
     HAL_GPIO_WritePin( GPIOA, GPIO_PIN_4, GPIO_PIN_SET );
     return extractDataFromBuffer( dataIn );
 }
+
+void GateDriverSpi_SetCS( uint8_t state )
+{
+    if ( state != 0 )
+        HAL_GPIO_WritePin( GPIOA, GPIO_PIN_4, GPIO_PIN_SET );
+    else
+        HAL_GPIO_WritePin( GPIOA, GPIO_PIN_4, GPIO_PIN_RESET );
+}
+
+

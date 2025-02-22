@@ -36,6 +36,7 @@ typedef struct
 {
     void     ( *spiWrite         ) ( uint16_t cmdOut );
     uint16_t ( *spiRead          ) ( uint16_t cmdOut );
+    void     ( *spiSetCS         ) ( uint8_t state   );
     uint32_t ( *adcReadRawPhaseA ) ( void            );
     uint32_t ( *adcReadRawPhaseB ) ( void            );
     uint32_t ( *adcReadRawPhaseC ) ( void            );

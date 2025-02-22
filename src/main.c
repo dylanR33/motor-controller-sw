@@ -46,6 +46,7 @@ void main()
     {
         .spiWrite         = GateDriverSpi_Write,
         .spiRead          = GateDriverSpi_Read,
+        .spiSetCS         = GateDriverSpi_SetCS,
         .adcReadRawPhaseA = PhaseCurrentAdc_GetRawPhaseA,
         .adcReadRawPhaseB = PhaseCurrentAdc_GetRawPhaseB,
         .adcReadRawPhaseC = PhaseCurrentAdc_GetRawPhaseC,

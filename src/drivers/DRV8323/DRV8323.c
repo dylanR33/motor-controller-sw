@@ -120,8 +120,9 @@ static int isAddressOutOfRange( uint8_t address )
 
 static int isInterfaceValid( DRV8323Interface* inter )
 {
-    return ( inter->spiRead && inter->spiWrite && inter->adcReadRawPhaseA &&
-             inter->adcReadRawPhaseB && inter->adcReadRawPhaseC &&
+    return ( inter->spiRead          && inter->spiWrite         && 
+             inter->spiSetCS         && inter->adcReadRawPhaseA && 
+             inter->adcReadRawPhaseB && inter->adcReadRawPhaseC && 
              inter->setEnablePin );
 }
 

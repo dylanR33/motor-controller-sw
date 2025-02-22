@@ -19,7 +19,7 @@ void GateDriverGpio_Config()
 
 void GateDriverGpio_SetEnablePin( uint8_t state )
 {
-    if ( state != 0 )
+    if ( state )
         HAL_GPIO_WritePin( GPIOA, GPIO_PIN_11, GPIO_PIN_SET );
     else 
         HAL_GPIO_WritePin( GPIOA, GPIO_PIN_11, GPIO_PIN_RESET );

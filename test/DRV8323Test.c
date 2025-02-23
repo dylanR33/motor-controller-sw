@@ -13,6 +13,8 @@
 TEST_GROUP( DRV8323 );
 
 
+uint8_t nextReading[ sizeof( uint16_t ) ] = { 0, 0};
+
 TEST_SETUP( DRV8323 )
 {
     DRV8323Interface interface = 
@@ -28,7 +30,11 @@ TEST_SETUP( DRV8323 )
     DRV8323_SetInterface( &interface );
 
     WriteSpy_Create();
+
     FakeRead_Create();
+    nextReading[ 0 ] = 0;
+    nextReading[ 1 ] = 0;
+    FakeRead_SetNextReading8Arr( nextReading, sizeof( nextReading ) );
 }
 
 TEST_TEAR_DOWN( DRV8323 )
@@ -36,7 +42,7 @@ TEST_TEAR_DOWN( DRV8323 )
 }
 
 
-IGNORE_TEST( DRV8323, SetInterface_RequireAllInterfaces )
+TEST( DRV8323, SetInterface_RequireAllInterfaces )
 {
     DRV8323Interface interface = 
     {
@@ -58,61 +64,66 @@ IGNORE_TEST( DRV8323, SetInterface_RequireAllInterfaces )
     TEST_ASSERT_EQUAL( DRV8323_INTERFACE_SET, DRV8323_SetInterface( &interface ) );
 }
 
-IGNORE_TEST( DRV8323, WriteMSBLow )
+static uint16_t concatenate16( uint8_t* write )
+{
+    return ( uint16_t )( ( write[0] << 8 ) | write[1] );
+}
+
+TEST( DRV8323, WriteMSBLow )
 {
     DRV8323_Write( 0xFFFF, 0x03 );
-    TEST_ASSERT_BIT_LOW( 15, WriteSpy_GetLastWrite16() );
+    TEST_ASSERT_BIT_LOW( 15, concatenate16( WriteSpy_GetLastWrite8Arr() ) );
 }
 
-IGNORE_TEST( DRV8323, ReadMSBHigh )
+TEST( DRV8323, ReadMSBHigh )
 {
     DRV8323_Read( 0x01 );
-    TEST_ASSERT_BIT_HIGH( 15 ,FakeRead_GetLastCmd16() );
+    TEST_ASSERT_BIT_HIGH( 15 , concatenate16( FakeRead_GetLastCmd8Arr() ) );
 }
 
-IGNORE_TEST( DRV8323, PreventWriteToOutOfBoundsAddresses )
+TEST( DRV8323, PreventWriteToOutOfBoundsAddresses )
 {
     DRV8323_Write( 0xFFFF, 0x07 );
-    TEST_ASSERT_EQUAL( 0, WriteSpy_GetLastWrite16() );
+    TEST_ASSERT_NULL( WriteSpy_GetLastWrite8Arr() );
 }
 
-IGNORE_TEST( DRV8323, PreventReadToOutOfBoundsAddresses )
+TEST( DRV8323, PreventReadToOutOfBoundsAddresses )
 {
     TEST_ASSERT_EQUAL( OUT_OF_BOUNDS_ADDRESS, DRV8323_Read( 0x08 ) );
-    TEST_ASSERT_EQUAL( 0, FakeRead_GetLastCmd16() );
+    TEST_ASSERT_NULL( FakeRead_GetLastCmd8Arr() );
 }
 
-IGNORE_TEST( DRV8323, PreventWriteToReadOnlyAddresses )
+TEST( DRV8323, PreventWriteToReadOnlyAddresses )
 {
     DRV8323_Write( 0xFFFF, 0x01 );
-    TEST_ASSERT_EQUAL( 0, WriteSpy_GetLastWrite16() );
+    TEST_ASSERT_NULL( WriteSpy_GetLastWrite8Arr() );
 }
 
-IGNORE_TEST( DRV8323, RestrictDataToBits10Through0 )
+TEST( DRV8323, RestrictDataToBits10Through0 )
 {
     DRV8323_Write( 0xFFFF, 0x02 );
-    TEST_ASSERT_EQUAL_HEX16( 0x17FF, WriteSpy_GetLastWrite16() );
+    TEST_ASSERT_EQUAL_HEX16( 0x17FF, concatenate16( WriteSpy_GetLastWrite8Arr() ) );
 }
 
-IGNORE_TEST( DRV8323, ReadDataBitsCleared )
+TEST( DRV8323, ReadDataBitsCleared )
 {
     DRV8323_Read( 0x05 );
-    TEST_ASSERT_BITS_LOW( 0x07FF, FakeRead_GetLastCmd16() );
+    TEST_ASSERT_BITS_LOW( 0x07FF, concatenate16( FakeRead_GetLastCmd8Arr() ) );
 }
 
-IGNORE_TEST( DRV8323, WritePlaceAddressInBits14Through11 )
+TEST( DRV8323, WritePlaceAddressInBits14Through11 )
 {
     DRV8323_Write( 0xFFFF, 0x05 );
-    TEST_ASSERT_BITS( 0x7800, 0x2800, WriteSpy_GetLastWrite16() );
+    TEST_ASSERT_BITS( 0x7800, 0x2800, concatenate16( WriteSpy_GetLastWrite8Arr() ) );
 }
 
-IGNORE_TEST( DRV8323, ReadPlaceAddressInBits14Through11 )
+TEST( DRV8323, ReadPlaceAddressInBits14Through11 )
 {
     DRV8323_Read( 0x05 );
-    TEST_ASSERT_BITS( 0x7800, 0x2800, FakeRead_GetLastCmd16() );
+    TEST_ASSERT_BITS( 0x7800, 0x2800, concatenate16( FakeRead_GetLastCmd8Arr() ) );
 }
 
-IGNORE_TEST( DRV8323, SetDriverCtrlMemberBitsPlacedCorrectly )
+TEST( DRV8323, SetDriverCtrlMemberBitsPlacedCorrectly )
 {
     DRV8323DriverCtrl config =
     {
@@ -128,10 +139,10 @@ IGNORE_TEST( DRV8323, SetDriverCtrlMemberBitsPlacedCorrectly )
     };
 
     DRV8323_SetDriverCtrl( &config );
-    TEST_ASSERT_BITS( 0x07FF, 0x02B5, WriteSpy_GetLastWrite16() );
+    TEST_ASSERT_BITS( 0x07FF, 0x02B5, concatenate16( WriteSpy_GetLastWrite8Arr() ) );
 }
 
-IGNORE_TEST( DRV8323, SetGateDriveHSMemberBitsPlacedCorrectly )
+TEST( DRV8323, SetGateDriveHSMemberBitsPlacedCorrectly )
 {
     DRV8323GateDriveHS config = 
     {
@@ -140,10 +151,10 @@ IGNORE_TEST( DRV8323, SetGateDriveHSMemberBitsPlacedCorrectly )
         .idriven_hs = 10
     };
     DRV8323_SetGateDriveHS( &config );
-    TEST_ASSERT_BITS( 0x07FF, 0x039A, WriteSpy_GetLastWrite16() );
+    TEST_ASSERT_BITS( 0x07FF, 0x039A, concatenate16( WriteSpy_GetLastWrite8Arr() ) );
 }
 
-IGNORE_TEST( DRV8323, SetGateDriveLSMemberBitsPlacedCorrectly )
+TEST( DRV8323, SetGateDriveLSMemberBitsPlacedCorrectly )
 {
     DRV8323GateDriveLS config = 
     {
@@ -153,10 +164,10 @@ IGNORE_TEST( DRV8323, SetGateDriveLSMemberBitsPlacedCorrectly )
         .idriven_ls = 15
     };
     DRV8323_SetGateDriveLS( &config );
-    TEST_ASSERT_BITS( 0x07FF, 0x015F, WriteSpy_GetLastWrite16() );
+    TEST_ASSERT_BITS( 0x07FF, 0x015F, concatenate16( WriteSpy_GetLastWrite8Arr() ) );
 }
 
-IGNORE_TEST( DRV8323, SetOCPCtrlMemberBitsPlacedCorrectly )
+TEST( DRV8323, SetOCPCtrlMemberBitsPlacedCorrectly )
 {
     DRV8323OCPCtrl config = 
     {
@@ -167,10 +178,10 @@ IGNORE_TEST( DRV8323, SetOCPCtrlMemberBitsPlacedCorrectly )
         .vds_lvl = 12
     };
     DRV8323_SetOCPCtrl( &config );
-    TEST_ASSERT_BITS( 0x07FF, 0x046C, WriteSpy_GetLastWrite16() );
+    TEST_ASSERT_BITS( 0x07FF, 0x046C, concatenate16( WriteSpy_GetLastWrite8Arr() ) );
 }
 
-IGNORE_TEST( DRV8323, SetCSACtrlMemberBitsPlacedCorrectly )
+TEST( DRV8323, SetCSACtrlMemberBitsPlacedCorrectly )
 {
     DRV8323CSACtrl config = 
     {
@@ -185,10 +196,10 @@ IGNORE_TEST( DRV8323, SetCSACtrlMemberBitsPlacedCorrectly )
         .sen_lvl = 2
     };
     DRV8323_SetCSACtrl( &config );
-    TEST_ASSERT_BITS( 0x07FF, 0x5A6, WriteSpy_GetLastWrite16() );
+    TEST_ASSERT_BITS( 0x07FF, 0x5A6, concatenate16( WriteSpy_GetLastWrite8Arr() ) );
 }
 
-IGNORE_TEST( DRV8323, SetGateDriveHSFullFrameCheck )
+TEST( DRV8323, SetGateDriveHSFullFrameCheck )
 {
     DRV8323GateDriveHS config = 
     {
@@ -197,10 +208,10 @@ IGNORE_TEST( DRV8323, SetGateDriveHSFullFrameCheck )
         .idriven_hs = 10
     };
     DRV8323_SetGateDriveHS( &config );
-    TEST_ASSERT_EQUAL_HEX32( 0x1B9A, WriteSpy_GetLastWrite16() );
+    TEST_ASSERT_EQUAL_HEX32( 0x1B9A, concatenate16( WriteSpy_GetLastWrite8Arr() ) );
 }
 
-IGNORE_TEST( DRV8323, SetDriverCtrlFailIfMembersBitsExceedExpected )
+TEST( DRV8323, SetDriverCtrlFailIfMembersBitsExceedExpected )
 {
     DRV8323DriverCtrl config =
     {
@@ -216,10 +227,10 @@ IGNORE_TEST( DRV8323, SetDriverCtrlFailIfMembersBitsExceedExpected )
     };
 
     DRV8323_SetDriverCtrl( &config );
-    TEST_ASSERT_EQUAL( 0, WriteSpy_GetLastWrite16() );
+    TEST_ASSERT_NULL( WriteSpy_GetLastWrite8Arr() );
 }
 
-IGNORE_TEST( DRV8323, SetGateDriveHSFailIfMembersBitsExceedExpected )
+TEST( DRV8323, SetGateDriveHSFailIfMembersBitsExceedExpected )
 {
     DRV8323GateDriveHS config = 
     {
@@ -228,10 +239,10 @@ IGNORE_TEST( DRV8323, SetGateDriveHSFailIfMembersBitsExceedExpected )
         .idriven_hs = 10
     };
     DRV8323_SetGateDriveHS( &config );
-    TEST_ASSERT_EQUAL( 0, WriteSpy_GetLastWrite16() );
+    TEST_ASSERT_NULL( WriteSpy_GetLastWrite8Arr() );
 }
 
-IGNORE_TEST( DRV8323, SetGateDriveLSFailIfMembersBitsExceedExpected )
+TEST( DRV8323, SetGateDriveLSFailIfMembersBitsExceedExpected )
 {
     DRV8323GateDriveLS config = 
     {
@@ -241,10 +252,10 @@ IGNORE_TEST( DRV8323, SetGateDriveLSFailIfMembersBitsExceedExpected )
         .idriven_ls = 16
     };
     DRV8323_SetGateDriveLS( &config );
-    TEST_ASSERT_EQUAL( 0, WriteSpy_GetLastWrite16() );
+    TEST_ASSERT_NULL( WriteSpy_GetLastWrite8Arr() );
 }
 
-IGNORE_TEST( DRV8323, SetOCPCtrlFailIfMembersBitsExceedExpected )
+TEST( DRV8323, SetOCPCtrlFailIfMembersBitsExceedExpected )
 {
     DRV8323OCPCtrl config = 
     {
@@ -255,10 +266,10 @@ IGNORE_TEST( DRV8323, SetOCPCtrlFailIfMembersBitsExceedExpected )
         .vds_lvl = 16
     };
     DRV8323_SetOCPCtrl( &config );
-    TEST_ASSERT_EQUAL( 0, WriteSpy_GetLastWrite16() );
+    TEST_ASSERT_NULL( WriteSpy_GetLastWrite8Arr() );
 }
 
-IGNORE_TEST( DRV8323, SetCSACtrlFailIfMembersBitsExceedExpected )
+TEST( DRV8323, SetCSACtrlFailIfMembersBitsExceedExpected )
 {
     DRV8323CSACtrl config = 
     {
@@ -273,12 +284,14 @@ IGNORE_TEST( DRV8323, SetCSACtrlFailIfMembersBitsExceedExpected )
         .sen_lvl = 2
     };
     DRV8323_SetCSACtrl( &config );
-    TEST_ASSERT_EQUAL( 0, WriteSpy_GetLastWrite16() );
+    TEST_ASSERT_NULL( WriteSpy_GetLastWrite8Arr() );
 }
 
-IGNORE_TEST( DRV8323, GetFaultStatus1MemberBitsExtractedCorrectly )
+TEST( DRV8323, GetFaultStatus1MemberBitsExtractedCorrectly )
 {
-    FakeRead_SetNextReading16( 0x0555 );
+    nextReading[ 0 ] = 0x05;
+    nextReading[ 1 ] = 0x55;
+    FakeRead_SetNextReading8Arr( nextReading, sizeof( nextReading ) );
 
     DRV8323FaultStatus1 fstat1 = { 0 };
     DRV8323_GetFaultStatus1( &fstat1 );
@@ -295,9 +308,11 @@ IGNORE_TEST( DRV8323, GetFaultStatus1MemberBitsExtractedCorrectly )
     TEST_ASSERT_EQUAL( 1, fstat1.vds_lc  );
 }
 
-IGNORE_TEST( DRV8323, GetFaultStatus2MemberBitsExtractedCorrectly )
+TEST( DRV8323, GetFaultStatus2MemberBitsExtractedCorrectly )
 {
-    FakeRead_SetNextReading16( 0x0555 );
+    nextReading[ 0 ] = 0x05;
+    nextReading[ 1 ] = 0x55;
+    FakeRead_SetNextReading8Arr( nextReading, sizeof( nextReading ) );
 
     DRV8323FaultStatus2 fstat2 = { 0 };
     DRV8323_GetFaultStatus2( &fstat2 );
@@ -314,9 +329,11 @@ IGNORE_TEST( DRV8323, GetFaultStatus2MemberBitsExtractedCorrectly )
     TEST_ASSERT_EQUAL( 1, fstat2.vgs_lc );
 }
 
-IGNORE_TEST( DRV8323, GetDriverCtrlMemberBitsExtractedCorrectly )
+TEST( DRV8323, GetDriverCtrlMemberBitsExtractedCorrectly )
 {
-    FakeRead_SetNextReading16( 0x0555 );
+    nextReading[ 0 ] = 0x05;
+    nextReading[ 1 ] = 0x55;
+    FakeRead_SetNextReading8Arr( nextReading, sizeof( nextReading ) );
 
     DRV8323DriverCtrl driverCtrl = { 0 };
     DRV8323_GetDriverCtrl( &driverCtrl );
@@ -331,9 +348,11 @@ IGNORE_TEST( DRV8323, GetDriverCtrlMemberBitsExtractedCorrectly )
     TEST_ASSERT_EQUAL( 1, driverCtrl.clr_flt  );
 }
 
-IGNORE_TEST( DRV8323, GetGateDriveHSMemberBitsExtractedCorrectly )
+TEST( DRV8323, GetGateDriveHSMemberBitsExtractedCorrectly )
 {
-    FakeRead_SetNextReading16( 0x0555 );
+    nextReading[ 0 ] = 0x05;
+    nextReading[ 1 ] = 0x55;
+    FakeRead_SetNextReading8Arr( nextReading, sizeof( nextReading ) );
 
     DRV8323GateDriveHS gateDriveHS = { 0 };
     DRV8323_GetGateDriveHS( &gateDriveHS );
@@ -342,9 +361,11 @@ IGNORE_TEST( DRV8323, GetGateDriveHSMemberBitsExtractedCorrectly )
     TEST_ASSERT_EQUAL( 5, gateDriveHS.idriven_hs );
 }
 
-IGNORE_TEST( DRV8323, GetGateDriveLSMemberBitsExtractedCorrectly )
+TEST( DRV8323, GetGateDriveLSMemberBitsExtractedCorrectly )
 {
-    FakeRead_SetNextReading16( 0x0555 );
+    nextReading[ 0 ] = 0x05;
+    nextReading[ 1 ] = 0x55;
+    FakeRead_SetNextReading8Arr( nextReading, sizeof( nextReading ) );
 
     DRV8323GateDriveLS gateDriveLS = { 0 };
     DRV8323_GetGateDriveLS( &gateDriveLS );
@@ -354,9 +375,11 @@ IGNORE_TEST( DRV8323, GetGateDriveLSMemberBitsExtractedCorrectly )
     TEST_ASSERT_EQUAL( 5, gateDriveLS.idriven_ls );
 }
 
-IGNORE_TEST( DRV8323, GetOCPCtrlMemberBitsExtractedCorrectly )
+TEST( DRV8323, GetOCPCtrlMemberBitsExtractedCorrectly )
 {
-    FakeRead_SetNextReading16( 0x0555 );
+    nextReading[ 0 ] = 0x05;
+    nextReading[ 1 ] = 0x55;
+    FakeRead_SetNextReading8Arr( nextReading, sizeof( nextReading ) );
 
     DRV8323OCPCtrl ocpCtrl = { 0 };
     DRV8323_GetOCPCtrl( &ocpCtrl );
@@ -367,9 +390,11 @@ IGNORE_TEST( DRV8323, GetOCPCtrlMemberBitsExtractedCorrectly )
     TEST_ASSERT_EQUAL( 5, ocpCtrl.vds_lvl   );
 }
 
-IGNORE_TEST( DRV8323, GetCSACtrlMemberBitsExtractedCorrectly )
+TEST( DRV8323, GetCSACtrlMemberBitsExtractedCorrectly )
 {
-    FakeRead_SetNextReading16( 0x0555 );
+    nextReading[ 0 ] = 0x05;
+    nextReading[ 1 ] = 0x55;
+    FakeRead_SetNextReading8Arr( nextReading, sizeof( nextReading ) );
 
     DRV8323CSACtrl csaCtrl = { 0 };
     DRV8323_GetCSACtrl( &csaCtrl );
@@ -384,7 +409,7 @@ IGNORE_TEST( DRV8323, GetCSACtrlMemberBitsExtractedCorrectly )
     TEST_ASSERT_EQUAL( 1, csaCtrl.sen_lvl   );
 }
 
-IGNORE_TEST( DRV8323, GetPhaseCurrentEquationProducesExpectedValue )
+TEST( DRV8323, GetPhaseCurrentEquationProducesExpectedValue )
 {
 
     FakeRead_SetNextReading32VoidParameter( 2000 );
@@ -402,7 +427,7 @@ IGNORE_TEST( DRV8323, GetPhaseCurrentEquationProducesExpectedValue )
 
 }
 
-IGNORE_TEST( DRV8323, SetEnableStateSampleInput )
+TEST( DRV8323, SetEnableStateSampleInput )
 {
     DRV8323_SetEnableState( ENABLE_ON );
     TEST_ASSERT_EQUAL( 1, WriteSpy_GetLastWrite8() );

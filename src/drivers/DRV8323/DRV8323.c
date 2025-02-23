@@ -156,6 +156,17 @@ static void setReadWriteBit( uint16_t* data )
     *data |= RW_BIT;
 }
 
+static void splitDataIntoBuffer( uint16_t data, uint8_t* buf )
+{
+    buf[0] = data >> 8;
+    buf[1] = data;
+}
+
+static uint16_t extractDataFromBuffer( uint8_t* buf )
+{
+    return ( buf[0] << 8 ) | buf[1];
+}
+
 
 DRV8323Status DRV8323_SetInterface( DRV8323Interface* inter )
 {
@@ -183,7 +194,12 @@ void DRV8323_Write( uint16_t data, uint8_t address )
 
     clearReadWriteBit( &data );
 
-    interface.spiWrite( data );
+    uint8_t dataOut[ sizeof( uint16_t ) ];
+    splitDataIntoBuffer( data, dataOut );
+
+    interface.spiSetCS( 0 );
+    interface.spiWrite( dataOut, sizeof( dataOut) );
+    interface.spiSetCS( 1 );
 }
 
 
@@ -192,13 +208,21 @@ uint16_t DRV8323_Read( uint8_t address )
     if (  isAddressOutOfRange( address ) )
         return OUT_OF_BOUNDS_ADDRESS;
 
-    uint16_t cmdOut = 0;
+    uint16_t cmd = 0;
 
-    placeAddress( &cmdOut, address );
+    placeAddress( &cmd, address );
 
-    setReadWriteBit( &cmdOut );
+    setReadWriteBit( &cmd );
 
-    return interface.spiRead( cmdOut );
+    uint8_t cmdOut[ sizeof( uint16_t ) ];
+    splitDataIntoBuffer( cmd, cmdOut );
+    uint8_t rxBuff[ sizeof( uint16_t ) ];
+
+    interface.spiSetCS( 0 );
+    interface.spiRead( cmdOut, rxBuff, sizeof( cmdOut ) );
+    interface.spiSetCS( 1 );
+
+    return extractDataFromBuffer( rxBuff );
 }
 
 

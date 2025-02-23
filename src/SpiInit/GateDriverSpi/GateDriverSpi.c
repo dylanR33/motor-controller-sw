@@ -69,51 +69,21 @@ void GateDriverSpi_Config()
 }
 
 
-static void splitDataIntoBuffer( uint16_t data, uint8_t* buffer )
+void GateDriverSpi_Write( uint8_t* dataOut, uint16_t size )
 {
-    buffer[0] = data >> 8;
-    buffer[1] = data;
-}
-
-void GateDriverSpi_Write( uint16_t cmdOut )
-{
-    uint8_t dataOut[ sizeof( uint16_t ) ];
-    splitDataIntoBuffer( cmdOut, dataOut );
-    GateDriver_hspi.TxXferSize = sizeof( dataOut );
+    GateDriver_hspi.TxXferSize = size;
     GateDriver_hspi.pTxBuffPtr = dataOut;
-    //// Pull CS low
-    HAL_GPIO_WritePin( GPIOA, GPIO_PIN_4, GPIO_PIN_RESET );
-
     // Write
-    HAL_SPI_Transmit( &GateDriver_hspi, dataOut, sizeof( dataOut ), 100 );
-
-    // Pull CS back high
-    HAL_GPIO_WritePin( GPIOA, GPIO_PIN_4, GPIO_PIN_SET );
+    HAL_SPI_Transmit( &GateDriver_hspi, dataOut, size, 100 );
 }
 
-static uint32_t extractDataFromBuffer( uint8_t* buffer )
+
+void GateDriverSpi_Read( uint8_t* dataOut, uint8_t* rxBuff, uint16_t size )
 {
-    return buffer[0] << 8 |
-           buffer[1];
-}
-
-uint16_t GateDriverSpi_Read( uint16_t cmdOut )
-{
-    uint8_t dataOut[ sizeof( uint16_t ) ];
-    splitDataIntoBuffer( cmdOut, dataOut );
-
-    uint8_t dataIn[ sizeof( uint16_t ) ];
-    GateDriver_hspi.RxXferSize = sizeof( dataIn );
-    GateDriver_hspi.pRxBuffPtr = dataIn;
-    // Pull CS low
-    HAL_GPIO_WritePin( GPIOA, GPIO_PIN_4, GPIO_PIN_RESET );
-
+    GateDriver_hspi.RxXferSize = size;
+    GateDriver_hspi.pRxBuffPtr = rxBuff;
     // Read
-    HAL_SPI_Receive( &GateDriver_hspi, dataOut, sizeof( dataOut ), 100 );
-    
-    // Pull CS back high and return data
-    HAL_GPIO_WritePin( GPIOA, GPIO_PIN_4, GPIO_PIN_SET );
-    return extractDataFromBuffer( dataIn );
+    HAL_SPI_TransmitReceive( &GateDriver_hspi, dataOut, rxBuff, size, 100 );
 }
 
 void GateDriverSpi_SetCS( uint8_t state )

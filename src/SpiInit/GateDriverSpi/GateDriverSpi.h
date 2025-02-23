@@ -5,9 +5,9 @@
 
 void GateDriverSpi_Config();
 
-void GateDriverSpi_Write( uint16_t cmdOut );
+void GateDriverSpi_Write( uint8_t* dataOut, uint16_t size );
 
-uint16_t GateDriverSpi_Read( uint16_t cmdOut );
+void GateDriverSpi_Read( uint8_t* dataOut, uint8_t* rxBuff, uint16_t size );
 
 void GateDriverSpi_SetCS( uint8_t state );
 

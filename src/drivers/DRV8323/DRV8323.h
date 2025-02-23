@@ -34,13 +34,13 @@ typedef enum
 
 typedef struct
 {
-    void     ( *spiWrite         ) ( uint16_t cmdOut );
-    uint16_t ( *spiRead          ) ( uint16_t cmdOut );
-    void     ( *spiSetCS         ) ( uint8_t state   );
-    uint32_t ( *adcReadRawPhaseA ) ( void            );
-    uint32_t ( *adcReadRawPhaseB ) ( void            );
-    uint32_t ( *adcReadRawPhaseC ) ( void            );
-    void     ( *setEnablePin     ) ( uint8_t state   );
+    void     ( *spiWrite         ) ( uint8_t* data, uint16_t size );
+    void     ( *spiRead          ) ( uint8_t* cmd,  uint8_t* rxBuff, uint16_t size );
+    void     ( *spiSetCS         ) ( uint8_t state );
+    uint32_t ( *adcReadRawPhaseA ) ( void );
+    uint32_t ( *adcReadRawPhaseB ) ( void );
+    uint32_t ( *adcReadRawPhaseC ) ( void );
+    void     ( *setEnablePin     ) ( uint8_t state );
 } DRV8323Interface;
 
 typedef struct

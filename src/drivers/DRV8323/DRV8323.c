@@ -23,6 +23,12 @@ enum
     FOUR_BIT_MASK   = 0x0F
 };
 
+typedef enum
+{
+    CS_OFF,
+    CS_ON
+} CSState;
+
 
 typedef enum
 {
@@ -197,9 +203,9 @@ void DRV8323_Write( uint16_t data, uint8_t address )
     uint8_t dataOut[ sizeof( uint16_t ) ];
     splitDataIntoBuffer( data, dataOut );
 
-    interface.spiSetCS( 0 );
+    interface.spiSetCS( CS_OFF );
     interface.spiWrite( dataOut, sizeof( dataOut) );
-    interface.spiSetCS( 1 );
+    interface.spiSetCS( CS_ON );
 }
 
 
@@ -218,9 +224,9 @@ uint16_t DRV8323_Read( uint8_t address )
     splitDataIntoBuffer( cmd, cmdOut );
     uint8_t rxBuff[ sizeof( uint16_t ) ];
 
-    interface.spiSetCS( 0 );
+    interface.spiSetCS( CS_OFF );
     interface.spiRead( cmdOut, rxBuff, sizeof( cmdOut ) );
-    interface.spiSetCS( 1 );
+    interface.spiSetCS( CS_ON );
 
     return extractDataFromBuffer( rxBuff );
 }
@@ -487,7 +493,7 @@ float DRV8323_GetPhaseCurrentC( DRV8323CurrentSenseCfg* iCfg )
 void DRV8323_SetEnableState( DRV8323_EnableState state )
 {
     if ( state == ENABLE_ON )
-        interface.setEnablePin( 1 );
+        interface.setEnablePin( ENABLE_ON );
     else
-        interface.setEnablePin( 0 );
+        interface.setEnablePin( ENABLE_OFF );
 }

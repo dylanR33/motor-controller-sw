@@ -16,6 +16,11 @@ enum
     FOURTEEN_BIT_MASK = 0x3FFF
 };
 
+typedef enum
+{
+    CS_OFF,
+    CS_ON
+} CSState;
 
 typedef enum
 {
@@ -184,6 +189,21 @@ static int isEFBitSet( uint32_t reading )
 }
 
 
+static void splitDataIntoBuffer( uint32_t data, uint8_t* buf )
+{
+    buf[0] = data >> 24;
+    buf[1] = data >> 16;
+    buf[2] = data >> 8;
+    buf[3] = data;
+}
+
+
+static uint32_t extractDataFromBuffer( uint8_t* buf )
+{
+    return ( buf[0] << 24 ) | ( buf[1] << 16 ) | ( buf[2] << 8  ) | buf[3];
+}
+
+
 void AS5047P_Write( uint32_t data, uint16_t address )
 {
     // return if read only address
@@ -201,7 +221,12 @@ void AS5047P_Write( uint32_t data, uint16_t address )
     // Set parity and EF bits low
     clearParityAndEFBits( &data );
 
-    interface.spiWrite( data );
+    uint8_t dataOut[ sizeof( uint32_t ) ];
+    splitDataIntoBuffer( data, dataOut );
+
+    interface.spiSetCS( CS_OFF );
+    interface.spiWrite( dataOut, sizeof( dataOut ) );
+    interface.spiSetCS( CS_ON );
 }
 
 
@@ -210,17 +235,25 @@ uint32_t AS5047P_Read( uint16_t address )
     if ( isAddressOutOfBounds( address ) )
         return AS5047P_OUT_OF_BOUNDS_ADDRESS;
 
-    uint32_t cmdOut = 0;
+    uint32_t cmd = 0;
 
-    placeAddress( &cmdOut, address );
+    placeAddress( &cmd, address );
     
     // Set r/w bit high
-    setReadWriteBit( &cmdOut );
+    setReadWriteBit( &cmd );
 
     // Set parity and EF bits low
-    clearParityAndEFBits( &cmdOut );
+    clearParityAndEFBits( &cmd );
 
-    uint32_t readingBack = interface.spiRead( cmdOut );
+    uint8_t cmdOut[ sizeof( uint32_t ) ];
+    splitDataIntoBuffer( cmd, cmdOut );
+    uint8_t rxBuff[ sizeof( uint32_t ) ];
+
+    interface.spiSetCS( CS_OFF );
+    interface.spiRead( cmdOut, rxBuff, sizeof( cmdOut ) );
+    interface.spiSetCS( CS_ON );
+
+    uint32_t readingBack = extractDataFromBuffer( rxBuff );
 
     // Check if parity bits back are set, if not fail
     if ( !areParityBitsSet( readingBack ) )

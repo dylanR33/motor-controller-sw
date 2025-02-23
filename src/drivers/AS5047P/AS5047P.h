@@ -37,9 +37,9 @@ typedef enum
 
 typedef struct
 {
-    void     ( *spiWrite )( uint32_t cmdOut );
-    uint32_t ( *spiRead  )( uint32_t cmdOut );
-    void     ( *spiSetCS )( uint8_t  state  );
+    void ( *spiWrite )( uint8_t* data, uint16_t size );
+    void ( *spiRead  )( uint8_t* cmd, uint8_t* rxBuff, uint16_t size );
+    void ( *spiSetCS )( uint8_t  state );
 } AS5047PInterface;
 
 

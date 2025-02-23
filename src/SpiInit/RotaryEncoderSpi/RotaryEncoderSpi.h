@@ -5,9 +5,9 @@
 
 void RotaryEncoderSpi_Config();
 
-void RotaryEncoderSpi_Write( uint32_t cmdOut );
+void RotaryEncoderSpi_Write( uint8_t* data, uint16_t size );
 
-uint32_t RotaryEncoderSpi_Read( uint32_t cmdOut );
+void RotaryEncoderSpi_Read( uint8_t* dataOut, uint8_t* rxBuff, uint16_t size );
 
 void RotaryEncoderSpi_SetCS( uint8_t state );
 

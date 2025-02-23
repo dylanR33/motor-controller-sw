@@ -69,55 +69,21 @@ void RotaryEncoderSpi_Config()
 }
 
 
-static void splitDataIntoBuffer( uint32_t data, uint8_t* buffer )
+void RotaryEncoderSpi_Write( uint8_t* data, uint16_t size )
 {
-    buffer[0] = data >> 24;
-    buffer[1] = data >> 16;
-    buffer[2] = data >> 8;
-    buffer[3] = data;
-}
-
-void RotaryEncoderSpi_Write( uint32_t cmdOut )
-{
-    uint8_t dataOut[ sizeof( uint32_t ) ];
-    splitDataIntoBuffer( cmdOut, dataOut );
-    RotaryEncoder_hspi.TxXferSize = sizeof( dataOut );
-    RotaryEncoder_hspi.pTxBuffPtr = dataOut;
-    //// Pull CS low
-    HAL_GPIO_WritePin( GPIOA, GPIO_PIN_15, GPIO_PIN_RESET );
-
+    RotaryEncoder_hspi.TxXferSize = size;
+    RotaryEncoder_hspi.pTxBuffPtr = data;
     // Write
-    HAL_SPI_Transmit( &RotaryEncoder_hspi, dataOut, sizeof( dataOut ), 100 );
-
-    // Pull CS back high
-    HAL_GPIO_WritePin( GPIOA, GPIO_PIN_15, GPIO_PIN_SET );
+    HAL_SPI_Transmit( &RotaryEncoder_hspi, data, size, 100 );
 }
 
-static uint32_t extractDataFromBuffer( uint8_t* buffer )
+
+void RotaryEncoderSpi_Read( uint8_t* dataOut, uint8_t* rxBuff, uint16_t size )
 {
-    return buffer[0] << 24 |
-           buffer[1] << 16 |
-           buffer[2] << 8  |
-           buffer[3];
-}
-
-uint32_t RotaryEncoderSpi_Read( uint32_t cmdOut )
-{
-    uint8_t dataOut[ sizeof( uint32_t ) ];
-    splitDataIntoBuffer( cmdOut, dataOut );
-
-    uint8_t dataIn[ sizeof( uint32_t ) ];
-    RotaryEncoder_hspi.RxXferSize = sizeof( dataIn );
-    RotaryEncoder_hspi.pRxBuffPtr = dataIn;
-    // Pull CS low
-    HAL_GPIO_WritePin( GPIOA, GPIO_PIN_15, GPIO_PIN_RESET );
-
+    RotaryEncoder_hspi.RxXferSize = size;
+    RotaryEncoder_hspi.pRxBuffPtr = rxBuff;
     // Read
-    HAL_SPI_Receive( &RotaryEncoder_hspi, dataOut, sizeof( dataOut ), 100 );
-    
-    // Pull CS back high and return data
-    HAL_GPIO_WritePin( GPIOA, GPIO_PIN_15, GPIO_PIN_SET );
-    return extractDataFromBuffer( dataIn );
+    HAL_SPI_TransmitReceive( &RotaryEncoder_hspi, dataOut, rxBuff, size, 100 );
 }
 
 void RotaryEncoderSpi_SetCS( uint8_t state )

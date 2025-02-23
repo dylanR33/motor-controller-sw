@@ -13,7 +13,7 @@
 TEST_GROUP( DRV8323 );
 
 
-uint8_t nextReading[ sizeof( uint16_t ) ] = { 0, 0};
+static uint8_t nextReading[ sizeof( uint16_t ) ] = { 0, 0};
 
 TEST_SETUP( DRV8323 )
 {

@@ -71,7 +71,7 @@ static uint8_t calculateParity( uint16_t value )
 {
     uint8_t setBitCount = 0;
     // Iterate over bits except MSB (parity bit)
-    for ( uint8_t bitPos = 0; bitPos < 14; bitPos++ )
+    for ( uint8_t bitPos = 0; bitPos < 15; bitPos++ )
     {
         if ( value & ( 1 << bitPos ) )   setBitCount++;
     }

@@ -67,12 +67,6 @@ static int isAddressOutOfBounds( uint16_t address )
 }
 
 
-static uint32_t extractDataFromBuffer( uint8_t* buf )
-{
-    return ( buf[0] << 24 ) | ( buf[1] << 16 ) | ( buf[2] << 8  ) | buf[3];
-}
-
-
 static uint8_t calculateParity( uint16_t value )
 {
     uint8_t setBitCount = 0;

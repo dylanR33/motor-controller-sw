@@ -256,6 +256,56 @@ void AS5047P_Write( uint32_t data, uint16_t address )
     interface.spiSetCS( CS_ON );
 }
 
+static uint8_t calculateParity( uint16_t value )
+{
+    uint8_t setBitCount = 0;
+    // Iterate over bits except MSB (parity bit)
+    for ( uint8_t bitPos = 0; bitPos < 14; bitPos++ )
+    {
+        if ( value & ( 1 << bitPos ) )   setBitCount++;
+    }
+
+    return ( ( setBitCount % 2 ) == 0 );
+}
+
+static void splitFrameIntoBuffer( uint16_t frame, uint8_t* buf )
+{
+    buf[ 0 ] = frame >> 8;
+    buf[ 1 ] = frame;
+}
+
+void write( uint16_t data, uint16_t address)
+{
+    // return if read only address
+    if ( isAddressReadOnly( address ) )
+        return;
+
+    CommandFrame cmdFrame = { 0 };
+    cmdFrame.addr = address;
+    cmdFrame.rw = 0;
+    if ( calculateParity( cmdFrame.raw ) )
+        cmdFrame.parc = 1;
+
+    DataFrame dataFrame = { 0 };
+    dataFrame.data = data;
+    if ( calculateParity( dataFrame.raw ) )
+        dataFrame.pard = 1;
+
+    uint8_t cmdOut[ sizeof( uint16_t ) ];
+    splitFrameIntoBuffer( cmdFrame.raw , cmdOut );
+
+    interface.spiSetCS( CS_OFF );
+    interface.spiWrite( cmdOut, sizeof( cmdOut ) );
+    interface.spiSetCS( CS_ON );
+
+    uint8_t dataOut[ sizeof( uint16_t ) ];
+    splitFrameIntoBuffer( dataFrame.raw , dataOut );
+
+    interface.spiSetCS( CS_OFF );
+    interface.spiWrite( dataOut, sizeof( dataOut ) );
+    interface.spiSetCS( CS_ON );
+}
+
 
 uint32_t AS5047P_Read( uint16_t address )
 {
@@ -291,6 +341,51 @@ uint32_t AS5047P_Read( uint16_t address )
         return AS5047P_EF_FAIL;
 
     return readingBack;
+}
+
+static void extractBufferIntoFrame( uint8_t* buf, uint16_t* frame )
+{
+    *frame = ( buf[ 0 ] << 8 ) | buf[ 1 ];
+}
+
+uint16_t read( uint16_t address )
+{
+    if ( isAddressOutOfBounds( address ) )
+        return AS5047P_OUT_OF_BOUNDS_ADDRESS;
+
+    CommandFrame cmdFrame = { 0 };
+    cmdFrame.addr = address;
+    cmdFrame.rw = 1;
+
+    if ( calculateParity( cmdFrame.raw ) )
+        cmdFrame.parc = 1;
+
+    uint8_t cmdOut[ sizeof( uint16_t ) ];
+    splitFrameIntoBuffer( cmdFrame.raw, cmdOut );
+
+    uint8_t rxBuff[ sizeof( uint16_t ) ];
+
+    interface.spiSetCS( CS_OFF );
+    interface.spiRead( cmdOut, rxBuff, sizeof( cmdOut ) );
+    interface.spiSetCS( CS_ON );
+
+    interface.spiSetCS( CS_OFF );
+    interface.spiRead( cmdOut, rxBuff, sizeof( cmdOut ) );
+    interface.spiSetCS( CS_ON );
+
+    DataFrame dataFrame = { 0 };
+
+    extractBufferIntoFrame( rxBuff, &dataFrame.raw );
+
+    // Check if data parity matches calculated , if not fail
+    if ( !( calculateParity( dataFrame.raw ) && dataFrame.pard ) ) 
+        return AS5047P_PARITY_FAIL;
+    
+    // Check if EF bit is set, if so fail
+    if ( dataFrame.ef )
+        return AS5047P_EF_FAIL;
+
+    return dataFrame.data;
 }
 
 

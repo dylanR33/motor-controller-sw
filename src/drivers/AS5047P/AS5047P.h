@@ -43,14 +43,6 @@ typedef struct
 } AS5047PInterface;
 
 
-typedef struct
-{
-    uint8_t parerr;
-    uint8_t invcomm;
-    uint8_t frerr;
-} AS5047PERRFL;
-
-
 typedef union
 {
     struct
@@ -62,15 +54,6 @@ typedef union
     };
     uint16_t raw;
 } AS5047Perrfl;
-
-
-typedef struct
-{
-    uint8_t progver;
-    uint8_t progotp;
-    uint8_t otpref;
-    uint8_t progen;
-} AS5047PPROG;
 
 
 typedef union
@@ -89,16 +72,6 @@ typedef union
 } AS5047Pprog;
 
 
-typedef struct
-{
-    uint8_t magl;
-    uint8_t magh;
-    uint8_t cof;
-    uint8_t lf;
-    uint8_t agc;
-} AS5047PDIAAGC;
-
-
 typedef union
 {
     struct
@@ -114,12 +87,6 @@ typedef union
 } AS5047Pdiaagc;
 
 
-typedef struct
-{
-    uint16_t mag;
-} AS5047PMAG;
-
-
 typedef union
 {
     struct
@@ -129,12 +96,6 @@ typedef union
     };
     uint16_t raw;
 } AS5047Pmag;
-
-
-typedef struct
-{
-    uint16_t angleunc;
-} AS5047PANGLEUNC;
 
 
 typedef union
@@ -148,12 +109,6 @@ typedef union
 } AS5047Pangleunc;
 
 
-typedef struct
-{
-    uint16_t anglecom;
-} AS5047PANGLECOM;
-
-
 typedef union
 {
     struct
@@ -163,12 +118,6 @@ typedef union
     };
     uint16_t raw;
 } AS5047Panglecom;
-
-
-typedef struct
-{
-    uint8_t zposMSB;
-} AS5047PZPOSM;
 
 
 typedef union
@@ -182,14 +131,6 @@ typedef union
 } AS5047Pzposm;
 
 
-typedef struct
-{
-    uint8_t zposLSB;
-    uint8_t comp_l_error_en;
-    uint8_t comp_h_error_en;
-} AS5047PZPOSL;
-
-
 typedef union
 {
     struct
@@ -201,19 +142,6 @@ typedef union
     };
     uint16_t raw;
 } AS5047Pzposl;
-
-
-typedef struct
-{
-    uint8_t factory_setting;
-    uint8_t not_used;
-    uint8_t dir;
-    uint8_t uvw_abi;
-    uint8_t daecdis;
-    uint8_t abibin;
-    uint8_t dataselect;
-    uint8_t pwmOn;
-} AS5047PSETTINGS1;
 
 
 typedef union
@@ -234,14 +162,6 @@ typedef union
 } AS5047Psettings1;
 
 
-typedef struct
-{
-    uint8_t uvwpp;
-    uint8_t hys;
-    uint8_t abires;
-} AS5047PSETTINGS2;
-
-
 typedef union
 {
     struct
@@ -251,43 +171,44 @@ typedef union
         uint16_t abires : 3;
         uint16_t _res   : 8;
     };
+    uint16_t raw;
 } AS5047Psettings2;
 
 
 AS5047PStatus AS5047P_SetInterface( AS5047PInterface* inter );
 
-void AS5047P_Write( uint32_t data, uint16_t address );
+void AS5047P_Write( uint16_t data, uint16_t address);
 
-uint32_t AS5047P_Read( uint16_t address );
+uint16_t AS5047P_Read( uint16_t address );
 
-void AS5047P_SetPROG( AS5047PPROG* config );
+void AS5047P_SetPROG( AS5047Pprog* config );
 
-void AS5047P_SetZPOSM( AS5047PZPOSM* config );
+void AS5047P_SetZPOSM( AS5047Pzposm* config );
 
-void AS5047P_SetZPOSL( AS5047PZPOSL* config );
+void AS5047P_SetZPOSL( AS5047Pzposl* config );
 
-void AS5047P_SetSETTINGS1( AS5047PSETTINGS1* config );
+void AS5047P_SetSETTINGS1( AS5047Psettings1* config );
 
-void AS5047P_SetSETTINGS2( AS5047PSETTINGS2* config );
+void AS5047P_SetSETTINGS2( AS5047Psettings2* config );
 
-void AS5047P_GetERRFL( AS5047PERRFL* errfl );
+void AS5047P_GetERRFL( AS5047Perrfl* errfl );
 
-void AS5047P_GetPROG( AS5047PPROG* prog );
+void AS5047P_GetPROG( AS5047Pprog* prog );
 
-void AS5047P_GetDIAAGC( AS5047PDIAAGC* diaagc );
+void AS5047P_GetDIAAGC( AS5047Pdiaagc* diaagc );
 
-void AS5047P_GetMAG( AS5047PMAG* mag );
+void AS5047P_GetMAG( AS5047Pmag* mag );
 
-void AS5047P_GetANGLEUNC( AS5047PANGLEUNC* angleunc );
+void AS5047P_GetANGLEUNC( AS5047Pangleunc* angleunc );
 
-void AS5047P_GetANGLECOM( AS5047PANGLECOM* anglecom );
+void AS5047P_GetANGLECOM( AS5047Panglecom* anglecom );
 
-void AS5047P_GetZPOSM( AS5047PZPOSM* zposm );
+void AS5047P_GetZPOSM( AS5047Pzposm* zposm );
 
-void AS5047P_GetZPOSL( AS5047PZPOSL* zposl );
+void AS5047P_GetZPOSL( AS5047Pzposl* zposl );
 
-void AS5047P_GetSETTINGS1( AS5047PSETTINGS1* settings1 );
+void AS5047P_GetSETTINGS1( AS5047Psettings1* settings1 );
 
-void AS5047P_GetSETTINGS2( AS5047PSETTINGS2* settings2 );
+void AS5047P_GetSETTINGS2( AS5047Psettings2* settings2 );
 
 #endif

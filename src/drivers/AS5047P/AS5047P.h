@@ -51,6 +51,19 @@ typedef struct
 } AS5047PERRFL;
 
 
+typedef union
+{
+    struct
+    {
+        uint16_t frerr   : 1;
+        uint16_t invcomm : 1;
+        uint16_t parerr  : 1;
+        uint16_t _res    : 13;
+    };
+    uint16_t raw;
+} AS5047Perrfl;
+
+
 typedef struct
 {
     uint8_t progver;
@@ -58,6 +71,22 @@ typedef struct
     uint8_t otpref;
     uint8_t progen;
 } AS5047PPROG;
+
+
+typedef union
+{
+    struct
+    {
+        uint16_t progen  : 1;
+        uint16_t _res1   : 1;
+        uint16_t otpref  : 1;
+        uint16_t progotp : 1;
+        uint16_t _res2   : 2;
+        uint16_t progver : 1;
+        uint16_t _res3   : 9;
+    };
+    uint16_t raw;
+} AS5047Pprog;
 
 
 typedef struct
@@ -70,10 +99,36 @@ typedef struct
 } AS5047PDIAAGC;
 
 
+typedef union
+{
+    struct
+    {
+        uint16_t agc  : 8;
+        uint16_t lf   : 1;
+        uint16_t cof  : 1;
+        uint16_t magh : 1;
+        uint16_t magl : 1;
+        uint16_t _res : 4;
+    };
+    uint16_t raw;
+} AS5047Pdiaagc;
+
+
 typedef struct
 {
     uint16_t mag;
 } AS5047PMAG;
+
+
+typedef union
+{
+    struct
+    {
+        uint16_t mag  : 14;
+        uint16_t _res : 2;
+    };
+    uint16_t raw;
+} AS5047Pmag;
 
 
 typedef struct
@@ -82,10 +137,32 @@ typedef struct
 } AS5047PANGLEUNC;
 
 
+typedef union
+{
+    struct
+    {
+        uint16_t angleunc : 14;
+        uint16_t _res     : 2;
+    };
+    uint16_t raw;
+} AS5047Pangleunc;
+
+
 typedef struct
 {
     uint16_t anglecom;
 } AS5047PANGLECOM;
+
+
+typedef union
+{
+    struct
+    {
+        uint16_t anglecom : 14;
+        uint16_t _res     : 2;
+    };
+    uint16_t raw;
+} AS5047Panglecom;
 
 
 typedef struct
@@ -94,12 +171,36 @@ typedef struct
 } AS5047PZPOSM;
 
 
+typedef union
+{
+    struct
+    {
+        uint16_t zposm : 8;
+        uint16_t _res  : 8;
+    };
+    uint16_t raw;
+} AS5047Pzposm;
+
+
 typedef struct
 {
     uint8_t zposLSB;
     uint8_t comp_l_error_en;
     uint8_t comp_h_error_en;
 } AS5047PZPOSL;
+
+
+typedef union
+{
+    struct
+    {
+        uint16_t zposl           : 6;
+        uint16_t comp_l_error_en : 1;
+        uint16_t comp_h_error_en : 1;
+        uint16_t _res            : 8;
+    };
+    uint16_t raw;
+} AS5047Pzposl;
 
 
 typedef struct
@@ -115,12 +216,42 @@ typedef struct
 } AS5047PSETTINGS1;
 
 
+typedef union
+{
+    struct
+    {
+        uint16_t factory_setting : 1;
+        uint16_t not_used        : 1;
+        uint16_t dir             : 1;
+        uint16_t uvw_abi         : 1;
+        uint16_t daecdis         : 1;
+        uint16_t abibin          : 1;
+        uint16_t dataselect      : 1;
+        uint16_t pwmOn           : 1;
+        uint16_t _res            : 8;
+    };
+    uint16_t raw;
+} AS5047Psettings1;
+
+
 typedef struct
 {
     uint8_t uvwpp;
     uint8_t hys;
     uint8_t abires;
 } AS5047PSETTINGS2;
+
+
+typedef union
+{
+    struct
+    {
+        uint16_t uvwpp  : 3;
+        uint16_t hys    : 2;
+        uint16_t abires : 3;
+        uint16_t _res   : 8;
+    };
+} AS5047Psettings2;
 
 
 AS5047PStatus AS5047P_SetInterface( AS5047PInterface* inter );

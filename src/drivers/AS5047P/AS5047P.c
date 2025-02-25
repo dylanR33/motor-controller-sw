@@ -117,6 +117,33 @@ typedef enum
     ABIRES_Pos = 5
 } SETTINGS2_BitPos;
  
+// SPI Command Frame union containing bit fields which make up the frame
+// as well as a raw frame
+typedef union
+{
+    struct
+    {
+        uint16_t addr : 14;
+        uint16_t rw : 1;
+        uint16_t parc : 1;
+    };
+    uint16_t raw;
+} CommandFrame;
+
+
+// SPI Data Frame union containing bit fields which make up the frame
+// as well as a raw frame
+typedef union
+{
+    struct
+    {
+        uint16_t data : 14;
+        uint16_t ef   : 1;
+        uint16_t pard : 1;
+    };
+    uint16_t raw;
+} DataFrame;
+
 
 AS5047PStatus AS5047P_SetInterface( AS5047PInterface* inter )
 {

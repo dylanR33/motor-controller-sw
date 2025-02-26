@@ -11,14 +11,14 @@ typedef enum
 } AS5047PStatus;
 
 
-enum
+typedef enum
 {
     AS5047P_OUT_OF_BOUNDS_ADDRESS,
     AS5047P_PARITY_FAIL,
     AS5047P_EF_FAIL
-};
+} AS5047PFailures;
 
-
+// Register address values
 typedef enum
 {
     NOP,
@@ -35,6 +35,19 @@ typedef enum
 } AS5047PRegister;
 
 
+// Structure defining callbacks to SPI interaction functions.
+//
+// spiWrite  : SPI transmission callback
+//      data : buffer containing transmision data
+//      size : size in bytes of transmission data buffer
+//
+// spiRead     : SPI transmission-receival callback
+//      cmd    : buffer containing transmission data
+//      rxBuff : buffer to store read back data
+//      size   : size of both buffers (should be equal)
+//
+// spiSetCS   : SPI chip select gpio logic state setting callback
+//      state : chip select gpio state ( 1 = high, 0 = low )
 typedef struct
 {
     void ( *spiWrite )( uint8_t* data, uint16_t size );
@@ -42,6 +55,11 @@ typedef struct
     void ( *spiSetCS )( uint8_t  state );
 } AS5047PInterface;
 
+
+// The following unions define the data significance contained within each register.
+// The anonymous structures within define the bit layout of the structure through the
+// use of bit fields. A raw value is provided within the union for easy access of the
+// full register word.
 
 typedef union
 {
@@ -175,40 +193,119 @@ typedef union
 } AS5047Psettings2;
 
 
+// Install the SPI callbacks into the driver. All callbacks
+// must be defined to be successful.
+//
+// inter : structure defining each SPI callback function
+//
+// returns : status of interface setting
 AS5047PStatus AS5047P_SetInterface( AS5047PInterface* inter );
 
+
+// Write data value into register.
+//
+// data : data value to write into register address
+//
+// address : address of register to write to
 void AS5047P_Write( uint16_t data, uint16_t address);
 
+
+// Read data of register.
+//
+// address : address of register to read from
+//
+// return : read back data
 uint16_t AS5047P_Read( uint16_t address );
 
+
+// Configure programming register.
+//
+// config : union defining values of each field within the register
 void AS5047P_SetPROG( AS5047Pprog* config );
 
+
+// Configure zero position MSB register.
+//
+// config : union defining values of each field within the register
 void AS5047P_SetZPOSM( AS5047Pzposm* config );
 
+
+// Configure zero position LSB / MAG register.
+//
+// config : union defining values of each field within the register
 void AS5047P_SetZPOSL( AS5047Pzposl* config );
 
+
+// Configure custom setting register 1.
+//
+// config : union defining values of each field within the register
 void AS5047P_SetSETTINGS1( AS5047Psettings1* config );
 
+
+// Configure custom setting register 2.
+//
+// config : union defining values of each field within the register
 void AS5047P_SetSETTINGS2( AS5047Psettings2* config );
 
+
+// Retreive error register.
+//
+// errfl : union to hold each field within the register
 void AS5047P_GetERRFL( AS5047Perrfl* errfl );
 
+
+// Retreive programming register.
+//
+// prog : union to hold each field within the register
 void AS5047P_GetPROG( AS5047Pprog* prog );
 
+
+// Retreive diagnostic / AGC register.
+//
+// diaagc : union to hold each field within the register
 void AS5047P_GetDIAAGC( AS5047Pdiaagc* diaagc );
 
+
+// Retreive CORDIC magnitude register.
+//
+// mag : union to hold each field within the register
 void AS5047P_GetMAG( AS5047Pmag* mag );
 
+
+// Retreive measured angle without dynamic angle error compensation register.
+//
+// angleunc : union to hold each field within the register
 void AS5047P_GetANGLEUNC( AS5047Pangleunc* angleunc );
 
+
+// Retreive measured angle with dynamic angle error compensation register.
+//
+// anglecom : union to hold each field within the register
 void AS5047P_GetANGLECOM( AS5047Panglecom* anglecom );
 
+
+// Retreive zero position MSB register.
+//
+// zposm : union to hold each field within the register
 void AS5047P_GetZPOSM( AS5047Pzposm* zposm );
 
+
+// Retreive zero position LSB / MAG register.
+//
+// zposl : union to hold each field within the register
 void AS5047P_GetZPOSL( AS5047Pzposl* zposl );
 
+
+// Retreive setting register 1.
+//
+// settings1 : union to hold each field within the register
 void AS5047P_GetSETTINGS1( AS5047Psettings1* settings1 );
 
+
+// Retreive setting register 2.
+//
+// settings2 : union to hold each field within the register
 void AS5047P_GetSETTINGS2( AS5047Psettings2* settings2 );
+
 
 #endif

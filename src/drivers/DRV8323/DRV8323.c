@@ -116,7 +116,29 @@ typedef enum
     VREF_DIV_Pos,
     CSA_FET_Pos
 } CSACtrl_BitPos;
- 
+
+
+typedef union
+{
+    struct
+    {
+        uint16_t data : 11;
+        uint16_t addr : 4;
+        uint16_t rw   : 1;
+    };
+    uint16_t raw;
+} InputDataFrame;
+
+
+typedef union
+{
+    struct
+    {
+        uint16_t data : 11;
+        uint16_t _res : 5;
+    };
+} OutputDataFrame;
+
 
 static int isAddressOutOfRange( uint8_t address )
 {

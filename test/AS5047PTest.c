@@ -12,8 +12,6 @@
 TEST_GROUP( AS5047P );
 
 
-static uint8_t nextReading[ sizeof( uint16_t ) ] = { 0, 0 };
-
 TEST_SETUP( AS5047P )
 {
     AS5047PInterface interface =
@@ -85,7 +83,7 @@ TEST( AS5047P, WriteCmdOutParityAndEFCheck )
     // Parity checks
     TEST_ASSERT_BIT_HIGH( 31, lastWrite );
     TEST_ASSERT_BIT_LOW( 15, lastWrite );
-    // EF check
+    // EF check (should always be low for writes)
     TEST_ASSERT_BIT_LOW( 14, lastWrite );
 }
 
@@ -112,8 +110,8 @@ TEST( AS5047P, PreventReadFromOutOfBoundsAddress )
 
 TEST( AS5047P, ReadEnsuresParityBitsMatch )
 {
-    uint8_t returnData[] = { 0x80, 0x0F };
-    FakeRead_SetNextReading8Arr( nextReading, sizeof( nextReading ) );
+    uint8_t returnData[] = { 0x00, 0x0F };
+    FakeRead_SetNextReading8Arr( returnData, sizeof( returnData ) );
     TEST_ASSERT_EQUAL( AS5047P_PARITY_FAIL, AS5047P_Read( PROG ) );
 }
 

@@ -98,6 +98,7 @@ void DRV8323_Write( uint16_t data, uint8_t address )
 
     CommandFrame cmd = { 0 };
     cmd.addr = address;
+    cmd.data = data;
 
     uint8_t cmdOut[ sizeof( uint16_t ) ];
     splitDataIntoBuffer( cmd.raw, cmdOut );

@@ -172,18 +172,6 @@ typedef union
 
 typedef struct
 {
-    DRV8323faultStatus1 faultStat1;
-    DRV8323faultStatus2 faultStat2;
-    DRV8323driverCtrl   driverCtrl;
-    DRV8323gateDriveHS  gateDriveHS;
-    DRV8323gateDriveLS  gateDriveLS;
-    DRV8323ocpCtrl      ocpCtrl;
-    DRV8323csaCtrl      csaCtrl;
-} DRV8323Registers;
-
-
-typedef struct
-{
     float    vRef;
     uint32_t adcSteps;
     float    rSense;

@@ -2,6 +2,7 @@
 #define __DRV8323_H__
 
 #include <stdint.h>
+#include <assert.h>
 
 
 typedef enum
@@ -76,6 +77,9 @@ typedef struct
 // The anonymous structures within define the bit layout of the structure through the
 // use of bit fields. A raw value is provided within the union for easy access of the
 // full register word.
+//
+// Checks for the size of the structure in bytes are included due to possible portability 
+// issues with bit-fields across different compilers and target hardware.
 
 typedef union
 {
@@ -98,6 +102,9 @@ typedef union
 } DRV8323faultStatus1;
 
 
+static_assert( sizeof( DRV8323faultStatus1 ) ==  2, 
+               "Size of DRV8323faultStatus1 struct incorrect expected 2 bytes." );
+
 typedef union
 {
     struct
@@ -119,6 +126,9 @@ typedef union
 } DRV8323faultStatus2;
 
 
+static_assert( sizeof( DRV8323faultStatus2 ) ==  2, 
+               "Size of DRV8323faultStatus2 struct incorrect expected 2 bytes." );
+
 typedef union
 {
     struct
@@ -138,6 +148,9 @@ typedef union
 } DRV8323driverCtrl;
 
 
+static_assert( sizeof( DRV8323driverCtrl ) ==  2, 
+               "Size of DRV8323driverCtrl struct incorrect expected 2 bytes." );
+
 typedef union
 {
     struct
@@ -150,6 +163,9 @@ typedef union
     uint16_t raw;
 } DRV8323gateDriveHS;
 
+
+static_assert( sizeof( DRV8323gateDriveHS ) ==  2, 
+               "Size of DRV8323gateDriveHS struct incorrect expected 2 bytes." );
 
 typedef union
 {
@@ -165,6 +181,9 @@ typedef union
 } DRV8323gateDriveLS;
 
 
+static_assert( sizeof( DRV8323gateDriveLS ) ==  2, 
+               "Size of DRV8323gateDriveLS struct incorrect expected 2 bytes." );
+
 typedef union
 {
     struct
@@ -179,6 +198,9 @@ typedef union
     uint16_t raw;
 } DRV8323ocpCtrl;
 
+
+static_assert( sizeof( DRV8323ocpCtrl ) ==  2, 
+               "Size of DRV8323ocpCtrl struct incorrect expected 2 bytes." );
 
 typedef union
 {
@@ -197,6 +219,10 @@ typedef union
     };
     uint16_t raw;
 } DRV8323csaCtrl;
+
+
+static_assert( sizeof( DRV8323csaCtrl ) ==  2, 
+               "Size of DRV8323csaCtrl struct incorrect expected 2 bytes." );
 
 
 // Structure used for calculation of phase current from ADC

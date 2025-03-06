@@ -2,6 +2,7 @@
 #define __AS5047P_H__
 
 #include <stdint.h>
+#include <assert.h>
 
 
 typedef enum
@@ -60,6 +61,9 @@ typedef struct
 // The anonymous structures within define the bit layout of the structure through the
 // use of bit fields. A raw value is provided within the union for easy access of the
 // full register word.
+//
+// Checks for the size of the structure in bytes are included due to possible portability 
+// issues with bit-fields across different compilers and target hardware.
 
 typedef union
 {
@@ -72,7 +76,10 @@ typedef union
     };
     uint16_t raw;
 } AS5047Perrfl;
+ 
 
+static_assert( sizeof( AS5047Perrfl ) ==  2, 
+               "Size of AS5047Perrfl struct incorrect expected 2 bytes." );
 
 typedef union
 {
@@ -90,6 +97,9 @@ typedef union
 } AS5047Pprog;
 
 
+static_assert( sizeof( AS5047Pprog ) ==  2, 
+               "Size of AS5047Pprog struct incorrect expected 2 bytes." );
+
 typedef union
 {
     struct
@@ -105,6 +115,9 @@ typedef union
 } AS5047Pdiaagc;
 
 
+static_assert( sizeof( AS5047Pdiaagc ) ==  2, 
+               "Size of AS5047Pdiaagc struct incorrect expected 2 bytes." );
+
 typedef union
 {
     struct
@@ -115,6 +128,9 @@ typedef union
     uint16_t raw;
 } AS5047Pmag;
 
+
+static_assert( sizeof( AS5047Pmag ) ==  2, 
+               "Size of AS5047Pmag struct incorrect expected 2 bytes." );
 
 typedef union
 {
@@ -127,6 +143,9 @@ typedef union
 } AS5047Pangleunc;
 
 
+static_assert( sizeof( AS5047Pangleunc ) ==  2, 
+               "Size of AS5047Pangleunc struct incorrect expected 2 bytes." );
+
 typedef union
 {
     struct
@@ -138,6 +157,9 @@ typedef union
 } AS5047Panglecom;
 
 
+static_assert( sizeof( AS5047Panglecom ) ==  2, 
+               "Size of AS5047Panglecom struct incorrect expected 2 bytes." );
+
 typedef union
 {
     struct
@@ -148,6 +170,9 @@ typedef union
     uint16_t raw;
 } AS5047Pzposm;
 
+
+static_assert( sizeof( AS5047Pzposm ) ==  2, 
+               "Size of AS5047Pzposm struct incorrect expected 2 bytes." );
 
 typedef union
 {
@@ -161,6 +186,9 @@ typedef union
     uint16_t raw;
 } AS5047Pzposl;
 
+
+static_assert( sizeof( AS5047Pzposl ) ==  2, 
+               "Size of AS5047Pzposl struct incorrect expected 2 bytes." );
 
 typedef union
 {
@@ -180,6 +208,9 @@ typedef union
 } AS5047Psettings1;
 
 
+static_assert( sizeof( AS5047Psettings1 ) ==  2, 
+               "Size of AS5047Psettings1 struct incorrect expected 2 bytes." );
+
 typedef union
 {
     struct
@@ -191,6 +222,10 @@ typedef union
     };
     uint16_t raw;
 } AS5047Psettings2;
+
+
+static_assert( sizeof( AS5047Psettings2 ) ==  2, 
+               "Size of AS5047Psettings2 struct incorrect expected 2 bytes." );
 
 
 // Install the SPI callbacks into the driver. All callbacks

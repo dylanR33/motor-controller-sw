@@ -27,7 +27,7 @@ void main()
 {
     HAL_Init();
     ClockInit_SystemClockConfig();
-    UsartPrint_Init();
+    UsartPrint_Init( 30E6 );
 
     RotaryEncoderSpi_Config();
     GateDriverSpi_Config();

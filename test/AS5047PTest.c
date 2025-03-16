@@ -81,8 +81,8 @@ TEST( AS5047P, WriteCmdOutParityAndEFCheck )
     AS5047P_Write( 0x0EFF, PROG );
     uint32_t lastWrite = concatenate32( WriteSpy_GetLastWrite8Arr() );
     // Parity checks
-    TEST_ASSERT_BIT_HIGH( 31, lastWrite );
-    TEST_ASSERT_BIT_LOW( 15, lastWrite );
+    TEST_ASSERT_BIT_LOW( 31, lastWrite );
+    TEST_ASSERT_BIT_HIGH( 15, lastWrite );
     // EF check (should always be low for writes)
     TEST_ASSERT_BIT_LOW( 14, lastWrite );
 }
@@ -91,8 +91,8 @@ TEST( AS5047P, ReadCmdOutParityCheck )
 {
     AS5047P_Read( PROG );
     uint32_t lastCmd = concatenate32( FakeRead_GetLastCmd8Arr() );
-    TEST_ASSERT_BIT_LOW( 31, lastCmd );
-    TEST_ASSERT_BIT_LOW( 15, lastCmd );
+    TEST_ASSERT_BIT_HIGH( 31, lastCmd );
+    TEST_ASSERT_BIT_HIGH( 15, lastCmd );
 }
 
 
@@ -110,7 +110,8 @@ TEST( AS5047P, PreventReadFromOutOfBoundsAddress )
 
 TEST( AS5047P, ReadEnsuresParityBitsMatch )
 {
-    uint8_t returnData[] = { 0x00, 0x0F };
+    // returning already even parity value but with parity bit set
+    uint8_t returnData[] = { 0x80, 0x0F };
     FakeRead_SetNextReading8Arr( returnData, sizeof( returnData ) );
     TEST_ASSERT_EQUAL( AS5047P_PARITY_FAIL, AS5047P_Read( PROG ) );
 }
@@ -125,10 +126,7 @@ TEST( AS5047P, ReadEnsuresEFBackIsLow )
 
 TEST( AS5047P, SetZPOSLFullFrameCheck )
 {
-    uint8_t firstWrite[] = { 0x80, 0x17 };
-    uint8_t secondWrite[] = { 0x00, 0x51 };
-
-    uint8_t expectedWrite[] = { 0x80, 0x17, 0x00, 0x51 };
+    uint8_t expectedWrite[] = { 0x00, 0x17, 0x80, 0x51 };
 
     AS5047Pzposl cfg =
     {

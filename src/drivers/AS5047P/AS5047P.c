@@ -67,6 +67,8 @@ static int isAddressOutOfBounds( uint16_t address )
 }
 
 
+// Checks if number of bits is even, if not the parity bit must be
+// set to ensure even number of bits set
 static uint8_t isEvenParity( uint16_t value )
 {
     uint8_t setBitCount = 0;
@@ -76,6 +78,7 @@ static uint8_t isEvenParity( uint16_t value )
         if ( value & ( 1 << bitPos ) )   setBitCount++;
     }
 
+    // If set bits is even returns 1, else (odd) returns 0
     return ( ( setBitCount % 2 ) == 0 );
 }
 
@@ -96,12 +99,12 @@ void AS5047P_Write( uint16_t data, uint16_t address)
     CommandFrame cmdFrame = { 0 };
     cmdFrame.addr = address;
     cmdFrame.rw = 0;
-    if ( isEvenParity( cmdFrame.raw ) )
+    if ( !isEvenParity( cmdFrame.raw ) )
         cmdFrame.parc = 1;
 
     DataFrame dataFrame = { 0 };
     dataFrame.data = data;
-    if ( isEvenParity( dataFrame.raw ) )
+    if ( !isEvenParity( dataFrame.raw ) )
         dataFrame.pard = 1;
 
     uint8_t cmdOut[ sizeof( uint16_t ) ];
@@ -135,7 +138,7 @@ uint16_t AS5047P_Read( uint16_t address )
     cmdFrame.addr = address;
     cmdFrame.rw = 1;
 
-    if ( isEvenParity( cmdFrame.raw ) )
+    if ( !isEvenParity( cmdFrame.raw ) )
         cmdFrame.parc = 1;
 
     uint8_t cmdOut[ sizeof( uint16_t ) ];
@@ -156,9 +159,9 @@ uint16_t AS5047P_Read( uint16_t address )
     dataFrame.raw = extractBufferIntoFrame( rxBuff );
 
     // Check if data parity matches calculated , if not fail
-    if ( isEvenParity( dataFrame.raw ) != dataFrame.pard ) 
+    if ( isEvenParity( dataFrame.raw ) && ( dataFrame.pard == 1 ) ) 
         return AS5047P_PARITY_FAIL;
-    
+
     // Check if EF bit is set, if so fail
     if ( dataFrame.ef )
         return AS5047P_EF_FAIL;

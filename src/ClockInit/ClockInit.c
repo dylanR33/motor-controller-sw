@@ -23,10 +23,10 @@ void ClockInit_SystemClockConfig()
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI; // 16 MHz
-  RCC_OscInitStruct.PLL.PLLM = 8;               // fpll in = 2 MHz
-  RCC_OscInitStruct.PLL.PLLN = 120;             // fvco_out = 240 MHz
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;   // fpll_out = 120 MHz
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;  // 16 MHz
+  RCC_OscInitStruct.PLL.PLLM = 8;                       // fpll in = 2 MHz
+  RCC_OscInitStruct.PLL.PLLN = 120;                     // fvco_out = 240 MHz
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;           // fpll_out = 120 MHz
   RCC_OscInitStruct.PLL.PLLQ = 7;
   HAL_RCC_OscConfig(&RCC_OscInitStruct);
   
@@ -34,9 +34,9 @@ void ClockInit_SystemClockConfig()
      clocks dividers */
   RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;  
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;  
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;    // 120 MHz
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;     // 30  MHz
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;     // 60  MHz
   HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_3);
 }
 
